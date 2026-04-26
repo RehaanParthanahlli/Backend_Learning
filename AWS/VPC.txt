@@ -1,0 +1,37 @@
+Note -
+    Virtual Private Cloud
+
+Think of a VPC as designing your own private neighborhood in the cloud:
+
+1. **CIDR (Classless Inter-Domain Routing)** = The city boundary.
+   - Defines the overall address range for your neighborhood.
+   - Example: 10.0.0.0/16 → gives you 65,536 possible house numbers (IP addresses).
+
+2. **Subnets** = The streets inside your neighborhood.
+   - You carve the big CIDR block into smaller chunks (subnets).
+   - Example: 10.0.1.0/24 → one street with 256 houses (IPs).
+   - Subnets can be public (connected to the internet) or private (internal only).
+
+3. **Route Tables** = The road maps.
+   - Decide how traffic flows between subnets and outside the neighborhood.
+   - Example: Cars (packets) from private subnet must go through NAT to reach the city.
+
+4. **Internet Gateway (IGW) / NAT Gateway** = The main gates.
+   - IGW = The front gate to the city (internet). Public subnets use this.
+   - NAT = A back gate that lets private houses send mail out, but outsiders can’t enter.
+
+5. **Security Groups (SG)** = Guards at each house.
+   - Control who can knock on the door (inbound) and what can leave (outbound).
+   - Example: Allow SSH (port 22) only from your laptop’s IP.
+
+6. **Network ACLs (NACLs)** = The neighborhood fence.
+   - Rules applied at the street level (subnet).
+   - Example: Block all traffic from a suspicious region before it even reaches houses.
+
+Putting it together:
+- CIDR defines the neighborhood size.
+- Subnets divide it into streets.
+- Route tables decide traffic flow.
+- IGW/NAT are the gates to the outside world.
+- SGs guard individual houses.
+- NACLs guard entire streets.

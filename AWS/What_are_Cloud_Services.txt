@@ -1,0 +1,43 @@
+### Cloud Service Models
+
+**1. IaaS (Infrastructure as a Service)**
+- Provides raw computing resources: servers, storage, networking.
+- You manage the operating system, apps, and data.
+- Example: 
+  - AWS EC2 (Elastic Compute Cloud)
+  - Azure Virtual Machines
+- Analogy: Renting an empty apartment — you bring your own furniture (apps, OS).
+
+---
+
+**2. PaaS (Platform as a Service)**
+- Provides a ready-to-use platform for building and running applications.
+- You don’t worry about servers or OS; just focus on coding and deploying.
+- Example:
+  - AWS Elastic Beanstalk
+  - Azure App Service
+- Analogy: Renting a furnished apartment — you just move in and start living (deploy apps).
+
+---
+
+**3. SaaS (Software as a Service)**
+- Provides complete software applications delivered over the internet.
+- No need to install, maintain, or manage anything — just use the app.
+- Example:
+  - Microsoft 365 (Azure)
+  - Amazon WorkMail (AWS)
+  - Salesforce, Zoom, Google Workspace
+- Analogy: Staying in a hotel — everything is ready, you just use the service.
+
+---
+
+### How These Services Help
+- **Scalability**: Easily add more resources or users without buying hardware.
+- **Flexibility**: Choose the right model depending on whether you need raw infrastructure, a development platform, or ready-made apps.
+- **Cost Efficiency**: Pay only for what you use.
+- **Global Reach**: Services are available worldwide, close to your users.
+
+**In short:**  
+- **IaaS** = raw building blocks (servers, storage).  
+- **PaaS** = ready platform for developers.  
+- **SaaS** = finished apps for end users.  

@@ -1,0 +1,43 @@
+# 🌐 Networking Basics
+
+## IP Address
+- Unique identifier for a device on a network.
+- Types:
+  - IPv4: 32-bit (e.g., 192.168.0.1)
+  - IPv6: 128-bit (e.g., 2001:0db8:85a3::8a2e:0370:7334)
+
+## Static IP
+- Manually assigned, does not change.
+- Useful for servers, hosting, and devices needing a permanent address.
+- Example: A company web server with fixed IP.
+
+## Dynamic IP
+- Assigned automatically by DHCP (Dynamic Host Configuration Protocol).
+- Changes over time or when reconnecting.
+- Common for home users and mobile devices.
+
+## DNS (Domain Name System)
+- Translates domain names into IP addresses.
+- Process:
+  1. Browser/OS checks cache.
+  2. Query sent to DNS resolver.
+  3. Resolver contacts:
+     - Root servers → TLD servers (.com, .org, etc.)
+     - Authoritative servers → final IP address.
+  4. Result cached for faster future lookups.
+- Example: google.com → 142.250.190.14
+
+## DHCP
+- Protocol that automatically assigns:
+  - IP address (usually dynamic)
+  - Subnet mask
+  - Default gateway
+  - DNS server
+- Saves manual configuration effort.
+
+## Quick Comparison
+- IP Address: Device identifier (number).
+- DNS: Converts names → numbers.
+- Static IP: Fixed, manual.
+- Dynamic IP: Temporary, automatic.
+- DHCP: Service that manages dynamic assignment.

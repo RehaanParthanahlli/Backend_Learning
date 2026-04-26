@@ -1,0 +1,50 @@
+# Step 1: Initialize project
+mkdir my-server
+cd my-server
+npm init -y
+
+# Step 2: Install dependencies
+npm install express dotenv nodemon
+
+//Read from backend to understand more
+//Node.js server setup
+// Load the http module
+const http = require('http');
+
+// Define the hostname and port
+const hostname = '127.0.0.1';
+const port = 3000;
+
+// Create the server
+const server = http.createServer((req, res) => {
+res.statusCode = 200; // OK
+res.setHeader('Content-Type', 'text/plain');
+res.end('Hello, Node.js server!\n');
+});
+
+// Start listening
+server.listen(port, hostname, () => {
+console.log(`Server running at http://${hostname}:${port}/`);
+});
+
+---
+
+res.setHeader()
+- This method sets an HTTP header in the response.
+- Headers are metadata sent before the actual body (like Content-Type, Content-Length, cookies, etc.).
+- Example: res.setHeader('Content-Type', 'text/plain');
+- It’s not compulsory to use setHeader(). If you don’t set it, Node will apply defaults (like Content-Type: text/html). But setting headers explicitly is good practice.
+
+res.end()
+- This method signals that the response is complete and sends it back to the client.
+- You can optionally pass data to res.end(), which becomes the body of the response.
+- Without res.end(), the server will not finish the response properly, and the client will keep waiting.
+
+---
+
+Key differences in express:
+- No need for setHeader(): Express sets sensible defaults.
+- No explicit res.end(): Express handles ending internally.
+- Routing is built in: app.get('/about', ...) etc.
+
+---

@@ -1,0 +1,140 @@
+HTTP Basics understanding
+  HTTP/TCP as core concepts of Internet[WorldWide Network Connection].
+      1) CLIENT–SERVER MODEL
+      - There is a client (browser/app) and a server.
+      - The client asks for something, the server sends back something.
+      - This back-and-forth happens over a connection (TCP), and the rules they follow are HTTP.
+
+      2) HTTP REQUEST (MADE BY CLIENT)
+      - When a client needs something (a page, data, etc.), it creates an HTTP request.
+      - The request must follow HTTP rules, so it is called an HTTP request.
+      - Main parts:
+        1) Start line
+          - Method: GET, POST, PUT, PATCH, DELETE (what action to do).
+          - Path: which resource (like /users or /tasks/1).
+          - HTTP version.
+        2) Headers
+          - Text key–value pairs (e.g., Content-Type: text/plain or image/jpeg).
+          - Carry extra info about the request (format, auth, etc.).
+        3) Body
+          - Optional.
+          - Usually present for methods like POST, PUT, PATCH, DELETE when sending data.
+          - Often contains JSON or form data.
+
+      3) HTTP RESPONSE (MADE BY SERVER)
+      - The server builds an HTTP response that also follows HTTP rules.
+      - Main parts:
+        1) Status line
+          - HTTP version.
+          - Status code (like 200, 404, 500).
+          - Reason phrase (e.g., OK, Not Found).
+        2) Headers
+          - Same idea as request: key–value pairs.
+          - Example: Content-Type: application/json.
+        3) Body
+          - Usually used for GET responses (HTML, JSON, etc.).
+          - Can also be used for other methods when server returns data or error details.
+
+      4) CONNECTION LAYER (TCP)
+      - Underneath HTTP there is TCP.
+      - TCP provides the reliable connection so that HTTP messages (requests/responses) can be sent correctly.
+      - The whole flow (client sends request, server sends response over TCP using HTTP) is called the client–server model.
+
+      5) YOUR EXTRA STEPS
+      - You drew the client–server and HTTP request/response structure in your notebook.
+      - You explored real HTTP requests and responses in the browser’s dev tools (Network tab, looking at Wikipedia’s requests).
+Express REST API
+  Endpoints:
+
+      1. API/Web Development
+        - Specific URL/route to access server resources
+        - Example: https://api.twitter.com/2/tweets
+        - Acts like a "door" to a particular service/data
+
+      2. Networking
+        - Any device/node communicating over a network
+        - Examples: laptops, smartphones, servers, IoT devices
+        - "Endpoint protection" = securing these devices
+
+      3. General Computing
+        - End of a communication channel
+        - Client and server are endpoints in a connection
+
+      Analogy:
+      - Library = server
+      - Different counters (fiction, research, magazines) = endpoints
+      - You go to the right counter depending on what you want
+  Node.js bring something called as node modules (Tool Kits), some are inbuilt & some must be installed using npm.
+  Routes:
+
+    1. Definition
+      - A route maps an incoming HTTP request (URL + method) to specific code in the application.
+      - It tells the server: "When someone visits this path, run this function."
+
+    2. How It Works
+      - URL Matching: The router checks the request path (e.g., "/home").
+      - Method Matching: It also checks the HTTP method (GET, POST, PUT, DELETE).
+      - Handler Execution: Runs the function or controller tied to that route.
+
+    3. Examples (Express.js style)
+      - GET /users → Fetch list of users
+      - POST /users → Create a new user
+      - GET /users/:id → Fetch a specific user by ID
+      - DELETE /users/:id → Remove a user
+
+    4. Difference from Endpoints
+      - Endpoint = the actual URL/resource (like "/users/123").
+      - Route = the rule that defines what happens when that URL is requested.
+
+    Analogy:
+    - Think of a restaurant:
+      - Endpoint = the table where food is served.
+      - Route = the waiter’s instructions: "If customer orders pasta, go to the kitchen and bring pasta."
+
+          Routing is the process of choosing efficient paths for data packets to travel from data centers (servers) to user devices across the internet/Network. Routers sit at checkpoints (states of the network) and, for every packet, decide which subnet/next hop to use by looking at traffic, link cost, and network health (Active/Dead) so that packets follow the most efficient path available.
+
+          There are two main routing types:
+          - Static routing: All routes are configured manually. If the topology or traffic changes, an administrator must update routes by hand, so it does not adapt automatically.
+          - Dynamic routing: Routers automatically learn and update routes using algorithms and metrics like cost, failures, and congestion, so paths adjust when the network changes.
+
+          Link‑state routing is a dynamic routing family with two key ideas: reliable flooding and shortest‑path computation (Dijkstra). Each router first describes its own links in link‑state packets (called LSAs in OSPF) containing neighbor IP, link cost, and link status (up/down). These LSAs are flooded through the network in a gossip‑like way so that every router eventually knows the full topology. To avoid endless loops and duplicates, LSAs carry unique router IDs plus sequence numbers/aging; a router forwards only new or more recent LSAs and ignores older or duplicate ones.
+
+          Once every router has the same topology map, each one independently runs Dijkstra’s algorithm. Conceptually, Dijkstra builds a table with:
+          1) A list of all nodes/checkpoints.
+          2) The current best known distance from the source router to each node.
+          3) The previous hop (parent) on the current best path.
+          It repeatedly picks the closest unvisited node and relaxes (updates) distances to its neighbors until all shortest paths are known. From this, each router derives a routing table mapping destination → next hop → total cost.
+
+          Open Shortest Path First (OSPF) is the real‑world link‑state protocol that implements these ideas on large networks. To remain scalable, OSPF divides the network into multiple areas plus a special backbone area (Area 0). Flooding of LSAs happens mainly inside each area; routers that connect an area to the backbone act as border routers. Traffic that must cross areas goes through the backbone. This structure reduces the size of each router’s routing table and limits how much topology each router must store and process, improving efficiency and scalability.
+          LSAs - Link State Advertizements
+
+                The journey of data packets from servers/data centers to our devices is the backbone of the internet. This journey follows a path chosen by routing logic, which is hard to design because it must be efficient, fast, and scalable. Routing is the process of choosing efficient paths so data packets can flow from data centers to devices.
+
+                Imagine you want to move from A to B in a city. You look at traffic and choose the road (subnet) that is less congested. In networks, A and B are states/points in the network, and routers decide which subnet/next hop to choose. Routers are placed at checkpoints in the network (including source and destination networks) and use algorithms to pick paths. The main purpose of a router is to choose the most efficient available path.
+
+                Routing has two main types:
+                - Static routing: All checkpoints/routes are set manually. If the network changes (link fails, new link added, etc.), an administrator must update routes manually.
+                - Dynamic routing: Routes change automatically based on algorithms, link cost, network failures, and traffic changes.
+
+                Link-state routing algorithms have two key ideas:
+                1) Dijkstra’s algorithm.
+                2) Reliable flooding.
+
+                Dijkstra’s algorithm builds a table:
+                - 1st column: all vertices/nodes/checkpoints.
+                - 2nd column: current shortest distance from the starting node.
+                - 3rd column: previous vertex (parent) on the best path.
+                It repeatedly chooses the closest unvisited node and relaxes (updates) distances to its neighbors until all shortest paths are known. From this, each router builds a routing table (destination → next hop → total cost).
+
+                Reliable flooding is how routers share topology information. Each vertex/router must know the full topology (who is connected to whom). Each router creates link-state packets (called LSAs in OSPF) that describe its links: neighbor IP address, link cost, and link health (alive or dead). These link-state packets are flooded through the network, similar to gossip: each “parent” router passes the information to its neighbors (“children”) until everyone knows the link state.
+
+                Flooding has a problem: loops. A router might receive the same link-state packet many times. Ideally, each router should process each packet only once. This is solved using a unique ID plus version info: LSAs include the originating router’s ID and sequence numbers/aging. A router forwards only new or more recent LSAs and ignores duplicates. In your example, if B receives packet 110 from A, it will not forward it to C if it knows C already has the same information.
+
+                This link-state + flooding + Dijkstra combo is implemented on the global internet using protocols. The protocol you are describing is OSPF (Open Shortest Path First).
+
+                In OSPF, the whole network is divided into several smaller areas. A special backbone area (Area 0) is created, and some routers belong to both the backbone and a normal area at the same time; these are area border routers (border routers). In OSPF, flooding happens mainly inside each area; doing it globally across the entire internet would not scale. When packets must travel between areas, they pass through the backbone area via these border routers.
+
+                This structure reduces the size of each routing table, reduces the complexity of routing operations, and helps the network scale to very large sizes. Link-state packets in OSPF are called LSAs (Link State Advertisements), and flooding loops are controlled using unique IDs together with sequence numbers and aging.
+                
+                understanding Routing !
+                https://www.youtube.com/watch?v=gQtgtKtvRdo

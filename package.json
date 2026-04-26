@@ -1,0 +1,26 @@
+{
+  "name": "backend-ai-engineer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RehaanParthanahlli/Backend-Learning.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RehaanParthanahlli/Backend-Learning/issues"
+  },
+  "homepage": "https://github.com/RehaanParthanahlli/Backend-Learning#readme",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "openai": "^6.22.0"
+  },
+  "devDependencies": {}
+}

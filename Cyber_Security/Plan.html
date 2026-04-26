@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppSec & Cloud Security Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --bg2: #0f1318;
+    --bg3: #151b22;
+    --border: #1e2730;
+    --accent1: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --accent4: #10b981;
+    --accent5: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --phase1: #00e5ff;
+    --phase2: #7c3aed;
+    --phase3: #f59e0b;
+    --phase4: #10b981;
+    --phase5: #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  .hero {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(0,229,255,0.08) 0%, rgba(124,58,237,0.06) 40%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent1);
+    border: 1px solid rgba(0,229,255,0.3);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent1) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 560px;
+    margin: 0 auto 32px;
+    font-weight: 300;
+  }
+
+  .salary-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .salary-stat {
+    text-align: center;
+    padding: 16px 24px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    min-width: 140px;
+  }
+
+  .salary-stat .num {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent1);
+    display: block;
+  }
+
+  .salary-stat .label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* PHASE SECTION */
+  .phases {
+    padding: 60px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 40px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+    margin-bottom: 4px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .phase:nth-child(1) { animation-delay: 0.1s; }
+  .phase:nth-child(2) { animation-delay: 0.2s; }
+  .phase:nth-child(3) { animation-delay: 0.3s; }
+  .phase:nth-child(4) { animation-delay: 0.4s; }
+  .phase:nth-child(5) { animation-delay: 0.5s; }
+  .phase:nth-child(6) { animation-delay: 0.6s; }
+
+  .phase-sidebar {
+    padding: 28px 24px 28px 0;
+    position: relative;
+  }
+
+  .phase-sidebar::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .phase-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .phase-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .phase-duration {
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    padding: 3px 8px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  .phase-content {
+    padding: 28px 0 28px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase:last-child .phase-content {
+    border-bottom: none;
+  }
+
+  .phase-desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .skill-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+  }
+
+  .skill-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .skill-card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .skill-card-icon {
+    font-size: 16px;
+  }
+
+  .skill-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .skill-list li {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.5;
+  }
+
+  .skill-list li::before {
+    content: '›';
+    color: inherit;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .resources-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .resource-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    border: 1px solid;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .resource-tag:hover { opacity: 0.7; }
+
+  .tag-free {
+    color: var(--accent4);
+    border-color: rgba(16,185,129,0.3);
+    background: rgba(16,185,129,0.05);
+  }
+
+  .tag-paid {
+    color: var(--accent3);
+    border-color: rgba(245,158,11,0.3);
+    background: rgba(245,158,11,0.05);
+  }
+
+  .tag-cert {
+    color: var(--accent2);
+    border-color: rgba(124,58,237,0.3);
+    background: rgba(124,58,237,0.05);
+  }
+
+  .tag-tool {
+    color: var(--accent1);
+    border-color: rgba(0,229,255,0.3);
+    background: rgba(0,229,255,0.05);
+  }
+
+  .tag-ai {
+    color: #f472b6;
+    border-color: rgba(244,114,182,0.3);
+    background: rgba(244,114,182,0.05);
+  }
+
+  /* Phase color theming */
+  .p1 { --pc: var(--phase1); }
+  .p2 { --pc: var(--phase2); }
+  .p3 { --pc: var(--phase3); }
+  .p4 { --pc: var(--phase4); }
+  .p5 { --pc: var(--phase5); }
+  .p6 { --pc: #a78bfa; }
+
+  .phase-title { color: var(--pc); }
+  .phase-num { }
+  .phase-duration { background: color-mix(in srgb, var(--pc) 10%, transparent); border: 1px solid color-mix(in srgb, var(--pc) 30%, transparent); color: var(--pc); }
+  .skill-card { border-left: 2px solid var(--pc); }
+
+  /* AI SECTION */
+  .ai-section {
+    background: linear-gradient(135deg, rgba(244,114,182,0.04) 0%, rgba(124,58,237,0.04) 100%);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 24px;
+  }
+
+  .ai-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .ai-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #f472b6, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .ai-desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 28px;
+    max-width: 600px;
+  }
+
+  .ai-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+
+  .ai-card {
+    background: var(--bg3);
+    border: 1px solid rgba(244,114,182,0.2);
+    border-radius: 4px;
+    padding: 16px;
+  }
+
+  .ai-card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #f472b6;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ai-card-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .ai-card-list li {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .ai-card-list li::before {
+    content: '◆';
+    color: #f472b6;
+    font-size: 8px;
+    flex-shrink: 0;
+    margin-top: 4px;
+    opacity: 0.5;
+  }
+
+  /* CERT TABLE */
+  .certs-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+
+  .certs-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    color: var(--accent3);
+  }
+
+  .cert-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .cert-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cert-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(30,39,48,0.8);
+    vertical-align: top;
+  }
+
+  .cert-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .cert-name {
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+  }
+
+  .cert-by {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .level-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+
+  .lvl-beginner { background: rgba(16,185,129,0.1); color: var(--accent4); border: 1px solid rgba(16,185,129,0.3); }
+  .lvl-mid { background: rgba(245,158,11,0.1); color: var(--accent3); border: 1px solid rgba(245,158,11,0.3); }
+  .lvl-advanced { background: rgba(239,68,68,0.1); color: var(--accent5); border: 1px solid rgba(239,68,68,0.3); }
+
+  /* LINKEDIN SKILLS */
+  .linkedin-section {
+    background: var(--bg2);
+    padding: 60px 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .linkedin-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .linkedin-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: var(--accent1);
+  }
+
+  .linkedin-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  .skills-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .skill-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid;
+    transition: transform 0.2s, opacity 0.2s;
+    cursor: default;
+  }
+
+  .skill-pill:hover { transform: scale(1.05); }
+
+  .sp-core { color: var(--accent1); border-color: rgba(0,229,255,0.3); background: rgba(0,229,255,0.05); }
+  .sp-appsec { color: var(--accent2); border-color: rgba(124,58,237,0.3); background: rgba(124,58,237,0.05); }
+  .sp-cloud { color: var(--accent4); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); }
+  .sp-ai { color: #f472b6; border-color: rgba(244,114,182,0.3); background: rgba(244,114,182,0.05); }
+  .sp-soft { color: var(--accent3); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.05); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  footer p {
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* TIMELINE MARKER */
+  .timeline-overview {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 0;
+  }
+
+  .timeline-track {
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 20px 0 12px;
+    gap: 2px;
+  }
+
+  .tl-seg {
+    height: 100%;
+    border-radius: 2px;
+    transition: opacity 0.2s;
+  }
+
+  .tl-seg:hover { opacity: 0.8; }
+
+  .timeline-labels {
+    display: flex;
+    gap: 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .tl-label {
+    flex: 1;
+    text-align: center;
+    padding: 4px 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 680px) {
+    .phase { grid-template-columns: 1fr; }
+    .phase-sidebar { padding: 24px 0 0; border: none; }
+    .phase-sidebar::after { display: none; }
+    .phase-content { padding: 16px 0 24px; }
+    h1 { font-size: 28px; }
+    .salary-bar { gap: 12px; }
+    .cert-table { font-size: 12px; }
+  }
+
+  /* ═══ INTERACTIVE LAYER ═══ */
+
+  /* Sticky progress bar */
+  #progress-bar-wrap {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9999;
+    background: rgba(10,12,15,0.95);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    backdrop-filter: blur(8px);
+  }
+  #progress-bar-wrap .pb-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+    letter-spacing: 1px;
+  }
+  #progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  #progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  #progress-pct {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent1);
+    min-width: 36px;
+    text-align: right;
+  }
+  #reset-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  #reset-btn:hover { color: var(--accent5); border-color: var(--accent5); }
+
+  body { padding-top: 44px; }
+
+  /* Checkable list items */
+  .skill-list li {
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s, opacity 0.2s;
+    position: relative;
+    padding-left: 20px;
+  }
+  .skill-list li::before {
+    content: '○';
+    position: absolute;
+    left: 0;
+    font-size: 10px;
+    color: var(--muted);
+    transition: color 0.2s, content 0.1s;
+  }
+  .skill-list li.done {
+    color: rgba(100,116,139,0.4) !important;
+    text-decoration: line-through;
+  }
+  .skill-list li.done::before {
+    content: '✓';
+    color: var(--accent4) !important;
+  }
+  .skill-list li:hover:not(.done) { color: var(--text); }
+
+  /* Phase completion badge */
+  .phase-done-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    margin-top: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: transparent;
+    transition: all 0.2s;
+  }
+  .phase-done-badge:hover { border-color: var(--accent4); color: var(--accent4); }
+  .phase-done-badge.completed { border-color: var(--accent4); color: var(--accent4); background: rgba(16,185,129,0.08); }
+  .phase-done-badge .badge-icon { font-size: 11px; }
+
+  /* Phase progress mini bar */
+  .phase-mini-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .phase-mini-fill {
+    height: 100%;
+    border-radius: 1px;
+    background: var(--pc, var(--accent1));
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  /* Notes panel */
+  #notes-panel {
+    position: fixed;
+    bottom: 20px; right: 20px;
+    z-index: 9998;
+    width: 280px;
+  }
+  #notes-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px 4px 0 0;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    width: 100%;
+    transition: color 0.2s;
+  }
+  #notes-toggle:hover { color: var(--accent1); }
+  #notes-toggle .nt-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent3);
+    flex-shrink: 0;
+  }
+  #notes-body {
+    display: none;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    padding: 10px;
+  }
+  #notes-body.open { display: block; }
+  #notes-textarea {
+    width: 100%;
+    height: 120px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 8px;
+    resize: none;
+    outline: none;
+    line-height: 1.5;
+  }
+  #notes-textarea:focus { border-color: var(--accent1); }
+  #notes-save {
+    margin-top: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--accent4);
+    background: none;
+    border: 1px solid rgba(16,185,129,0.3);
+    padding: 4px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+  }
+  #notes-save:hover { background: rgba(16,185,129,0.1); }
+
+  /* Current phase indicator */
+  #phase-indicator {
+    position: fixed;
+    left: 20px; bottom: 20px;
+    z-index: 9998;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 14px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    pointer-events: none;
+  }
+  #phase-indicator span { color: var(--accent1); }
+
+  /* Skill card done state */
+  .skill-card.card-done {
+    opacity: 0.55;
+    border-left-color: var(--accent4) !important;
+  }
+  .skill-card.card-done .skill-card-title { color: var(--accent4) !important; }
+
+</style>
+</head>
+<body>
+
+<!-- STICKY PROGRESS BAR -->
+<div id="progress-bar-wrap">
+  <span class="pb-label">ROADMAP PROGRESS</span>
+  <div id="progress-track"><div id="progress-fill"></div></div>
+  <span id="progress-pct">0%</span>
+  <button id="reset-btn" onclick="resetAll()">RESET</button>
+</div>
+
+<!-- NOTES PANEL -->
+<div id="notes-panel">
+  <button id="notes-toggle" onclick="toggleNotes()">
+    <span class="nt-dot"></span>&nbsp;MY NOTES &nbsp;<span id="notes-arrow">▲</span>
+  </button>
+  <div id="notes-body">
+    <textarea id="notes-textarea" placeholder="Jot down links, insights, things to revisit..."></textarea>
+    <button id="notes-save" onclick="saveNotes()">SAVE NOTES</button>
+  </div>
+</div>
+
+<!-- CURRENT PHASE INDICATOR -->
+<div id="phase-indicator">CURRENT PHASE: <span id="cur-phase-label">—</span></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">★ 2026 Edition — Node.js + AI Engineering Track</div>
+  <h1>AppSec + Cloud Security<br>Complete Roadmap</h1>
+  <p class="hero-sub">A structured path from zero to landing a high-paying role in AppSec and Cloud Security — tailored for Node.js developers doing AI Engineering. AI-native from day one.</p>
+  <div class="salary-bar">
+    <div class="salary-stat">
+      <span class="num">$152K</span>
+      <span class="label">Avg Cloud Security Salary</span>
+    </div>
+    <div class="salary-stat">
+      <span class="num">$205K</span>
+      <span class="label">Top Earner Potential</span>
+    </div>
+    <div class="salary-stat">
+      <span class="num">29%</span>
+      <span class="label">Job Growth (BLS 2034)</span>
+    </div>
+    <div class="salary-stat">
+      <span class="num">4M+</span>
+      <span class="label">Global Talent Shortage</span>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE OVERVIEW -->
+<div class="timeline-overview">
+  <div class="section-label">⟶ Full Learning Timeline — ~24–28 Months Total (7 Phases)</div>
+  <div class="timeline-track">
+    <div class="tl-seg" style="flex:2; background: var(--phase1);"></div>
+    <div class="tl-seg" style="flex:2; background: #f97316;"></div>
+    <div class="tl-seg" style="flex:2; background: var(--phase2);"></div>
+    <div class="tl-seg" style="flex:3; background: var(--phase3);"></div>
+    <div class="tl-seg" style="flex:3; background: var(--phase4);"></div>
+    <div class="tl-seg" style="flex:3; background: var(--phase5);"></div>
+    <div class="tl-seg" style="flex:3; background: #a78bfa;"></div>
+  </div>
+  <div class="timeline-labels">
+    <span class="tl-label" style="flex:2; color:var(--phase1);">Phase 1</span>
+    <span class="tl-label" style="flex:2; color:#f97316;">Phase 2 ★</span>
+    <span class="tl-label" style="flex:2; color:var(--phase2);">Phase 3</span>
+    <span class="tl-label" style="flex:3; color:var(--phase3);">Phase 4</span>
+    <span class="tl-label" style="flex:3; color:var(--phase4);">Phase 5</span>
+    <span class="tl-label" style="flex:3; color:var(--phase5);">Phase 6</span>
+    <span class="tl-label" style="flex:3; color:#a78bfa;">Phase 7</span>
+  </div>
+  <p style="font-family:'Space Mono',monospace;font-size:10px;color:#f97316;margin-top:10px;">★ Phase 2 = NEW: Web Development for Security Professionals</p>
+</div>
+
+<!-- PHASES -->
+<section class="phases">
+
+  <!-- PHASE 1 -->
+  <div class="phase p1">
+    <div class="phase-sidebar">
+      <span class="phase-num">Phase 01</span>
+      <div class="phase-title">Foundation & Core IT</div>
+      <span class="phase-duration">Months 1–2</span>
+    </div>
+    <div class="phase-content">
+      <p class="phase-desc">Build the non-negotiable base. You cannot secure what you don't understand.</p>
+      <div class="skill-grid">
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🐧</span> Linux Fundamentals</div>
+          <ul class="skill-list">
+            <li>Shell commands, file permissions, processes</li>
+            <li>OverTheWire Bandit wargame (free, beginner)</li>
+            <li>User management, cron jobs, logs</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🌐</span> Networking Basics</div>
+          <ul class="skill-list">
+            <li>TCP/IP, DNS, HTTP/S, OSI Model</li>
+            <li>Subnetting, VPNs, firewalls, proxies</li>
+            <li>Wireshark for packet analysis</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🔐</span> Security Foundations</div>
+          <ul class="skill-list">
+            <li>CIA Triad, threats vs vulnerabilities</li>
+            <li>Authentication, authorization, MFA</li>
+            <li>Encryption basics — TLS, AES, hashing</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🟩</span> Programming Intro</div>
+          <ul class="skill-list">
+            <li>Node.js — scripting, automation basics (you're already here)</li>
+            <li>Bash scripting for recon & tooling</li>
+            <li>Basic understanding of how web apps work (already have this from Motrix/Motor Skill Trainer)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="resources-row">
+        <span class="resource-tag tag-free">TryHackMe: Pre-Security Path (FREE)</span>
+        <span class="resource-tag tag-free">TryHackMe: Cyber Security 101 Path</span>
+        <span class="resource-tag tag-free">OverTheWire: Bandit</span>
+        <span class="resource-tag tag-paid">CompTIA A+ (optional cert)</span>
+        <span class="resource-tag tag-free">HTB Academy: OS Fundamentals</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 — NEW: WEB DEVELOPMENT FOR SECURITY -->
+  <div class="phase" style="--pc:#f97316;">
+    <div class="phase-sidebar">
+      <span class="phase-num">Phase 02 ★ NEW</span>
+      <div class="phase-title" style="color:#f97316;">Web Dev for Security Pros</div>
+      <span class="phase-duration" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);color:#f97316;">Months 3–4</span>
+    </div>
+    <div class="phase-content" style="border-left: none;">
+      <p class="phase-desc">You must understand how web apps are <em>built</em> before you can break or secure them. This is security-focused web dev — not full-stack dev. Learn just enough to understand attack surfaces.</p>
+
+      <!-- WHY CALLOUT -->
+      <div style="background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.25);border-radius:4px;padding:14px 16px;margin-bottom:20px;font-size:13px;">
+        <span style="font-family:'Syne',sans-serif;font-weight:700;color:#f97316;font-size:13px;">💡 Why Web Dev Matters for AppSec:</span>
+        <span style="color:var(--muted);margin-left:6px;">SQL Injection makes no sense without knowing how databases are queried. XSS makes no sense without knowing how browsers render HTML/JS. Cookie theft makes no sense without understanding sessions. Build first, then break.</span>
+      </div>
+
+      <div class="skill-grid">
+        <div class="skill-card" style="border-left-color:#f97316;">
+          <div class="skill-card-title"><span class="skill-card-icon">🏗️</span> HTML & the DOM</div>
+          <ul class="skill-list">
+            <li>HTML structure — tags, forms, inputs, attributes</li>
+            <li>DOM (Document Object Model) — how browsers parse pages</li>
+            <li>Forms: GET vs POST, form action, hidden fields</li>
+            <li>HTML comments &amp; metadata (often expose info)</li>
+            <li><strong style="color:#f97316;">Security link:</strong> XSS, clickjacking, form tampering</li>
+          </ul>
+        </div>
+        <div class="skill-card" style="border-left-color:#f97316;">
+          <div class="skill-card-title"><span class="skill-card-icon">🎨</span> CSS (Basics Only)</div>
+          <ul class="skill-list">
+            <li>Selectors, classes, IDs — enough to read pages</li>
+            <li>CSS-based UI redressing (clickjacking attacks)</li>
+            <li>You don't need to design — just read &amp; understand</li>
+            <li>Inline styles vs external stylesheets</li>
+            <li><strong style="color:#f97316;">Security link:</strong> CSS injection, content spoofing</li>
+          </ul>
+        </div>
+        <div class="skill-card" style="border-left-color:#f97316;">
+          <div class="skill-card-title"><span class="skill-card-icon">⚡</span> JavaScript — Critical!</div>
+          <ul class="skill-list">
+            <li>Variables, functions, loops, conditionals</li>
+            <li>DOM manipulation: <code style="background:rgba(255,255,255,0.07);padding:1px 4px;border-radius:2px;font-size:11px;">document.getElementById</code>, <code style="background:rgba(255,255,255,0.07);padding:1px 4px;border-radius:2px;font-size:11px;">innerHTML</code></li>
+            <li>Events: onclick, onload, onerror</li>
+            <li>Fetch API / AJAX — async data calls</li>
+            <li>localStorage, sessionStorage, cookies</li>
+            <li>JS in browser console — devtools usage</li>
+            <li><strong style="color:#f97316;">Security link:</strong> XSS, CSRF, token theft, prototype pollution</li>
+          </ul>
+        </div>
+        <div class="skill-card" style="border-left-color:#f97316;">
+          <div class="skill-card-title"><span class="skill-card-icon">🌐</span> HTTP Protocol Deep Dive</div>
+          <ul class="skill-list">
+            <li>HTTP methods: GET, POST, PUT, DELETE, PATCH, OPTIONS</li>
+            <li>Request/response headers — what each one does</li>
+            <li>Status codes: 200, 301, 302, 400, 401, 403, 404, 500</li>
+            <li>Cookies: Set-Cookie, HttpOnly, Secure, SameSite flags</li>
+            <li>HTTPS vs HTTP — TLS handshake basics</li>
+            <li>HTTP/2 and differences from HTTP/1.1</li>
+            <li><strong style="color:#f97316;">Security link:</strong> Session hijacking, cookie attacks, MITM</li>
+          </ul>
+        </div>
+        <div class="skill-card" style="border-left-color:#f97316;">
+          <div class="skill-card-title"><span class="skill-card-icon">🗄️</span> Databases & SQL — Critical!</div>
+          <ul class="skill-list">
+            <li>What databases are: tables, rows, columns</li>
+            <li>Basic SQL: SELECT, INSERT, UPDATE, DELETE, WHERE</li>
+            <li>JOINs, UNION, subqueries (core for SQLi)</li>
+            <li>How web apps query databases (parameterized queries)</li>
+            <li>MySQL/PostgreSQL — run queries locally</li>
+            <li>NoSQL basics (MongoDB) — different injection vectors</li>
+            <li><strong style="color:#f97316;">Security link:</strong> SQL Injection, NoSQL Injection, data leakage</li>
+          </ul>
+        </div>
+        <div class="skill-card" style="border-left-color:#f97316;">
+          <div class="skill-card-title"><span class="skill-card-icon">⚙️</span> Backend Basics (Node.js)</div>
+          <ul class="skill-list">
+            <li>How a web server works (request → logic → response)</li>
+            <li>Node.js Express — you've already done this with Motrix auth system</li>
+            <li>Routes, endpoints, parameters, middleware</li>
+            <li>Reading/writing to a database from code (Supabase client)</li>
+            <li>Environment variables &amp; config files (where secrets hide)</li>
+            <li><strong style="color:#f97316;">Security link:</strong> SSRF, command injection, insecure deserialization</li>
+          </ul>
+        </div>
+        <div class="skill-card" style="border-left-color:#f97316;">
+          <div class="skill-card-title"><span class="skill-card-icon">🔌</span> APIs — REST & GraphQL</div>
+          <ul class="skill-list">
+            <li>REST API structure — endpoints, methods, JSON</li>
+            <li>Authentication: API keys, Basic Auth, JWT tokens</li>
+            <li>OAuth 2.0 flow — how "Login with Google" works</li>
+            <li>GraphQL — queries, mutations, introspection</li>
+            <li>Using Postman or Insomnia to test APIs</li>
+            <li><strong style="color:#f97316;">Security link:</strong> Broken object auth, JWT attacks, GraphQL injection</li>
+          </ul>
+        </div>
+        <div class="skill-card" style="border-left-color:#f97316;">
+          <div class="skill-card-title"><span class="skill-card-icon">🔐</span> Auth & Session Management</div>
+          <ul class="skill-list">
+            <li>How login flows work (form → server → session)</li>
+            <li>Password hashing: bcrypt, Argon2 vs MD5 (bad)</li>
+            <li>Session tokens vs JWT tokens — pros/cons</li>
+            <li>Remember-me tokens, password reset flows</li>
+            <li>MFA implementation basics</li>
+            <li><strong style="color:#f97316;">Security link:</strong> Broken auth, session fixation, account takeover</li>
+          </ul>
+        </div>
+        <div class="skill-card" style="border-left-color:#f97316;">
+          <div class="skill-card-title"><span class="skill-card-icon">🐳</span> Dev Tools & Environment</div>
+          <ul class="skill-list">
+            <li>Browser DevTools: Network tab, Console, Elements</li>
+            <li>Git &amp; GitHub — version control basics</li>
+            <li>Docker basics — containers, Dockerfile, ports</li>
+            <li>VS Code setup for web projects</li>
+            <li>Reading &amp; understanding other people's code</li>
+            <li><strong style="color:#f97316;">Security link:</strong> Exposed .git dirs, secrets in repos, container escape</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- WHAT YOU DON'T NEED CALLOUT -->
+      <div style="background:rgba(100,116,139,0.06);border:1px solid rgba(100,116,139,0.2);border-radius:4px;padding:14px 16px;margin: 16px 0;font-size:12px;">
+        <span style="font-family:'Syne',sans-serif;font-weight:700;color:var(--muted);font-size:13px;">🚫 What you do NOT need to learn:</span>
+        <span style="color:var(--muted);margin-left:6px;">React, Angular, Vue, TypeScript, advanced CSS frameworks, or full-stack app design beyond what you already know. You're learning to <em>read and attack</em> apps, not build production ones. Your existing Node.js + Supabase + Cloudflare stack is more than enough — use it as your attack surface.</span>
+      </div>
+
+      <!-- MINI PROJECT -->
+      <div style="background:rgba(249,115,22,0.05);border:1px solid rgba(249,115,22,0.2);border-radius:4px;padding:14px 16px;margin-bottom:16px;font-size:12px;">
+        <span style="font-family:'Syne',sans-serif;font-weight:700;color:#f97316;font-size:13px;">🔨 Capstone Mini-Project:</span>
+        <span style="color:var(--muted);margin-left:6px;">You already built this with <strong style="color:#f97316;">Motrix</strong>! Take your Node.js + Supabase auth system and intentionally <em>break it</em> — try SQL injection on the login form, steal session cookies via XSS, attempt JWT manipulation, bypass RLS policies. This bridges directly into Phase 3 (AppSec). Your real project = your best lab.</span>
+      </div>
+
+      <div class="resources-row">
+        <span class="resource-tag tag-free">The Odin Project (HTML/CSS/JS — FREE)</span>
+        <span class="resource-tag tag-free">freeCodeCamp — Responsive Web Design</span>
+        <span class="resource-tag tag-free">MDN Web Docs (reference bible — FREE)</span>
+        <span class="resource-tag tag-free">SQLZoo — interactive SQL practice</span>
+        <span class="resource-tag tag-free">Express.js Official Docs (expressjs.com)</span>
+        <span class="resource-tag tag-paid">Udemy: Node.js, Express, MongoDB Bootcamp (Jonas)</span>
+        <span class="resource-tag tag-free">Postman Learning Center (API testing)</span>
+        <span class="resource-tag tag-tool">Browser DevTools (built-in, free)</span>
+        <span class="resource-tag tag-free">JWT.io — decode/inspect tokens</span>
+        <span class="resource-tag tag-tool">Docker Desktop (free)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 — was Phase 2 -->
+  <div class="phase p2">
+    <div class="phase-sidebar">
+      <span class="phase-num">Phase 03</span>
+      <div class="phase-title">Web Security & AppSec Basics</div>
+      <span class="phase-duration">Months 5–6</span>
+    </div>
+    <div class="phase-content">
+      <p class="phase-desc">Application security starts with understanding how web apps get attacked.</p>
+      <div class="skill-grid">
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🎯</span> OWASP Top 10</div>
+          <ul class="skill-list">
+            <li>SQL Injection, XSS, CSRF</li>
+            <li>IDOR, Broken Auth, Security Misconfig</li>
+            <li>SSRF, XXE, Insecure Deserialization</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🕵️</span> Web Pentesting Tools</div>
+          <ul class="skill-list">
+            <li>Burp Suite (Community — intercepting traffic)</li>
+            <li>OWASP ZAP for automated scanning</li>
+            <li>Nikto, Gobuster, SQLMap</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🔬</span> Vulnerable Labs Practice</div>
+          <ul class="skill-list">
+            <li>DVWA (Damn Vulnerable Web App)</li>
+            <li>WebGoat by OWASP</li>
+            <li>PortSwigger Web Security Academy (FREE)</span></li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">📡</span> API Security</div>
+          <ul class="skill-list">
+            <li>REST API concepts, auth (JWT, OAuth)</li>
+            <li>API fuzzing and testing basics</li>
+            <li>OWASP API Top 10</li>
+          </ul>
+        </div>
+      </div>
+      <div class="resources-row">
+        <span class="resource-tag tag-free">PortSwigger Web Academy (100% FREE)</span>
+        <span class="resource-tag tag-free">TryHackMe: Web App Pentesting Path</span>
+        <span class="resource-tag tag-free">HTB: Bug Bounty Hunter Path</span>
+        <span class="resource-tag tag-paid">Udemy: The Complete Web Pentesting Course</span>
+        <span class="resource-tag tag-cert">eWPT — Web App Pentesting Cert</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase p3">
+    <div class="phase-sidebar">
+      <span class="phase-num">Phase 04</span>
+      <div class="phase-title">Cloud Foundations</div>
+      <span class="phase-duration">Months 7–9</span>
+    </div>
+    <div class="phase-content">
+      <p class="phase-desc">You can't secure the cloud without knowing how it works. Start with AWS — it dominates the market.</p>
+      <div class="skill-grid">
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">☁️</span> AWS Core Services</div>
+          <ul class="skill-list">
+            <li>IAM (users, roles, policies, least privilege)</li>
+            <li>EC2, S3, VPC, Lambda, RDS</li>
+            <li>CloudTrail, GuardDuty, CloudWatch</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🏗️</span> Cloud Architecture Concepts</div>
+          <ul class="skill-list">
+            <li>Shared Responsibility Model</li>
+            <li>Defense in Depth for cloud</li>
+            <li>Multi-cloud awareness (Azure/GCP)</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🧪</span> Hands-On Labs</div>
+          <ul class="skill-list">
+            <li>Create free AWS account, break things safely</li>
+            <li>IAM lab: over-permissioned user → fix it</li>
+            <li>S3 bucket: public → locked down</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">📜</span> Infrastructure as Code</div>
+          <ul class="skill-list">
+            <li>Terraform basics — cloud provisioning</li>
+            <li>Security scanning IaC (Checkov)</li>
+            <li>AWS CloudFormation fundamentals</li>
+          </ul>
+        </div>
+      </div>
+      <div class="resources-row">
+        <span class="resource-tag tag-free">AWS Free Tier Account (required)</span>
+        <span class="resource-tag tag-free">AWS Skill Builder (free courses)</span>
+        <span class="resource-tag tag-free">TryHackMe: Intro to Cloud Security Room</span>
+        <span class="resource-tag tag-free">Cloud Resume Challenge (portfolio project)</span>
+        <span class="resource-tag tag-cert">AWS Cloud Practitioner (CLF-C02)</span>
+        <span class="resource-tag tag-paid">Udemy: Ultimate AWS Certified SAA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="phase p4">
+    <div class="phase-sidebar">
+      <span class="phase-num">Phase 05</span>
+      <div class="phase-title">Advanced AppSec & Cloud Security</div>
+      <span class="phase-duration">Months 10–15</span>
+    </div>
+    <div class="phase-content">
+      <p class="phase-desc">This is where you specialize and start building the skills employers pay premium salaries for.</p>
+      <div class="skill-grid">
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🔄</span> DevSecOps / Secure CI/CD</div>
+          <ul class="skill-list">
+            <li>Shift-left security in pipelines</li>
+            <li>SAST (Semgrep, SonarQube) & DAST (OWASP ZAP)</li>
+            <li>GitHub Actions + security gates</li>
+            <li>Container security (Docker, Kubernetes)</li>
+            <li>Cloudflare Workers security — WAF rules, rate limiting, secrets via wrangler</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">☁️</span> Cloud Security Deep Dive</div>
+          <ul class="skill-list">
+            <li>AWS Security Hub, Inspector, Macie</li>
+            <li>CloudTrail analysis for IAM breaches</li>
+            <li>VPC security groups, NACLs, WAF</li>
+            <li>Secrets management (AWS Secrets Manager)</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">📊</span> SIEM & Log Analysis</div>
+          <ul class="skill-list">
+            <li>Splunk fundamentals (free training)</li>
+            <li>ELK Stack (Elasticsearch, Logstash, Kibana)</li>
+            <li>Wazuh for open-source SIEM</li>
+            <li>Alert automation with Lambda</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🎯</span> Cloud Attack Scenarios</div>
+          <ul class="skill-list">
+            <li>Privilege escalation in AWS IAM</li>
+            <li>S3 bucket misconfigurations</li>
+            <li>Exposed metadata endpoints</li>
+            <li>PwnedLabs.io for cloud attack labs</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🔐</span> Secure Coding Practices</div>
+          <ul class="skill-list">
+            <li>Input validation, output encoding</li>
+            <li>SDLC security integration</li>
+            <li>Threat modeling (STRIDE framework)</li>
+            <li>Code review for security flaws</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🛡️</span> Compliance Frameworks</div>
+          <ul class="skill-list">
+            <li>NIST Cybersecurity Framework</li>
+            <li>ISO 27001 basics</li>
+            <li>SOC 2, GDPR, HIPAA awareness</li>
+          </ul>
+        </div>
+      </div>
+      <div class="resources-row">
+        <span class="resource-tag tag-free">PwnedLabs.io (cloud attack labs)</span>
+        <span class="resource-tag tag-free">TryHackMe: Attacking & Defending AWS</span>
+        <span class="resource-tag tag-free">TryHackMe: Security Engineer Path</span>
+        <span class="resource-tag tag-free">Splunk Free Training</span>
+        <span class="resource-tag tag-cert">AWS Security Specialty (SCS-C02)</span>
+        <span class="resource-tag tag-cert">CompTIA Security+ (SY0-701)</span>
+        <span class="resource-tag tag-paid">Udemy: DevSecOps Bootcamp</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 6 -->
+  <div class="phase p5">
+    <div class="phase-sidebar">
+      <span class="phase-num">Phase 06</span>
+      <div class="phase-title">Specialization & Bug Bounty</div>
+      <span class="phase-duration">Months 16–20</span>
+    </div>
+    <div class="phase-content">
+      <p class="phase-desc">Start earning real-world recognition. Bug bounty = paid practice + portfolio. CTFs = proof of skill.</p>
+      <div class="skill-grid">
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">💰</span> Bug Bounty Hunting</div>
+          <ul class="skill-list">
+            <li>HackerOne, Bugcrowd platforms</li>
+            <li>Scope research, recon methodology</li>
+            <li>Writing professional vulnerability reports</li>
+            <li>Focus on web + API vulns first</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🏆</span> CTF Competitions</div>
+          <ul class="skill-list">
+            <li>Hack The Box (HTB) machines</li>
+            <li>TryHackMe CTF rooms</li>
+            <li>PicoCTF, CTFtime events</li>
+            <li>Document wins on LinkedIn/GitHub</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">☁️</span> Cloud Pentesting</div>
+          <ul class="skill-list">
+            <li>Flaws.cloud and Flaws2.cloud (free labs)</li>
+            <li>CloudFox, Pacu (AWS exploitation tools)</li>
+            <li>CloudGoat (Rhino Security Labs)</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">📂</span> GitHub Portfolio</div>
+          <ul class="skill-list">
+            <li>Document all labs and CTF writeups</li>
+            <li>Build personal security tools in Node.js (your stack)</li>
+            <li>Open-source your RAG movie app & Motrix auth system as portfolio pieces</li>
+            <li>Contribute to open-source security projects</li>
+          </ul>
+        </div>
+      </div>
+      <div class="resources-row">
+        <span class="resource-tag tag-free">HackerOne (free signup)</span>
+        <span class="resource-tag tag-free">Flaws.cloud — free AWS vulns lab</span>
+        <span class="resource-tag tag-free">CloudGoat by Rhino Security (free)</span>
+        <span class="resource-tag tag-cert">CEH — Certified Ethical Hacker</span>
+        <span class="resource-tag tag-cert">OSCP (for advanced offensive track)</span>
+        <span class="resource-tag tag-paid">HTB Pro Labs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 7 -->
+  <div class="phase p6">
+    <div class="phase-sidebar">
+      <span class="phase-num">Phase 07</span>
+      <div class="phase-title">Job Ready & Career Launch</div>
+      <span class="phase-duration">Months 21–28</span>
+    </div>
+    <div class="phase-content">
+      <p class="phase-desc">Focus on landing your first role. Target: Junior AppSec Engineer, Cloud Security Analyst, DevSecOps Engineer.</p>
+      <div class="skill-grid">
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">💼</span> Resume & LinkedIn</div>
+          <ul class="skill-list">
+            <li>List certifications, labs, CTF wins</li>
+            <li>Keyword-optimize for ATS: "AWS Security", "SAST/DAST", "DevSecOps"</li>
+            <li>Add GitHub, TryHackMe, HackerOne profiles</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🎤</span> Interview Prep</div>
+          <ul class="skill-list">
+            <li>Explain OWASP Top 10 clearly</li>
+            <li>Live walk-through of a pentest finding</li>
+            <li>Scenario: "How would you secure an S3 bucket?"</li>
+            <li>Soft skills: communication, problem-solving</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🎯</span> Target Roles</div>
+          <ul class="skill-list">
+            <li>Junior AppSec Engineer ($90K–120K)</li>
+            <li>Cloud Security Analyst ($95K–130K)</li>
+            <li>DevSecOps Engineer ($100K–140K)</li>
+            <li>Security Operations Analyst (SOC) — entry path</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-title"><span class="skill-card-icon">🌐</span> Networking Strategy</div>
+          <ul class="skill-list">
+            <li>Connect with security professionals on LinkedIn</li>
+            <li>Attend DEF CON, BSides local events</li>
+            <li>Join OWASP local chapter meetings</li>
+            <li>Engage in r/netsec, r/cybersecurity</li>
+          </ul>
+        </div>
+      </div>
+      <div class="resources-row">
+        <span class="resource-tag tag-free">LinkedIn Jobs (search: AppSec, Cloud Security)</span>
+        <span class="resource-tag tag-free">Indeed, Glassdoor for salary research</span>
+        <span class="resource-tag tag-cert">AWS Security Specialty — highest value cert</span>
+        <span class="resource-tag tag-cert">CCSP — Cloud Security Professional</span>
+        <span class="resource-tag tag-paid">Udemy: Interview Prep for Cybersecurity</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- AI SKILLS SECTION -->
+<section class="ai-section">
+  <div class="ai-inner">
+    <div class="section-label">⚡ AI Skills — The Career Differentiator</div>
+    <div class="ai-title">🤖 AI Security Skills to Learn Parallel to Your Roadmap</div>
+    <p class="ai-desc">AI is reshaping cybersecurity. You're already ahead — your AI Engineering course + RAG pipeline work gives you a massive edge. Professionals who can secure AI systems AND use AI as a security tool will command the highest salaries. Integrate these from Phase 3 onwards.</p>
+    <div class="ai-grid">
+      <div class="ai-card">
+        <div class="ai-card-title">⚔️ AI Attack Vectors to Know</div>
+        <ul class="ai-card-list">
+          <li>Prompt Injection — #1 OWASP LLM risk (2025–2026)</li>
+          <li>Indirect prompt injection via RAG pipelines</li>
+          <li>Model data poisoning attacks</li>
+          <li>Adversarial inputs & jailbreaking</li>
+          <li>AI-assisted malware and phishing generation</li>
+        </ul>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">🛡️ Securing AI Systems</div>
+        <ul class="ai-card-list">
+          <li>OWASP LLM Top 10 (2025 edition)</li>
+          <li>Defensive prompt engineering</li>
+          <li>Input validation for LLM applications</li>
+          <li>AI red-teaming practices</li>
+          <li>NIST AI Risk Management Framework</li>
+          <li>EU AI Act compliance basics (Aug 2026 deadline)</li>
+        </ul>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">⚡ AI as Your Security Toolkit</div>
+        <ul class="ai-card-list">
+          <li>Use LLMs for log parsing &amp; anomaly detection</li>
+          <li>AI-assisted code review (GitHub Copilot)</li>
+          <li>Automate recon with AI workflows (n8n, LangChain.js — your stack)</li>
+          <li>Secure your own RAG pipelines against indirect prompt injection</li>
+          <li>Microsoft Copilot for Security (cloud SIEM)</li>
+          <li>AI-powered SIEM &amp; threat intelligence</li>
+        </ul>
+      </div>
+      <div class="ai-card">
+        <div class="ai-card-title">🎓 AI Security Learning Resources</div>
+        <ul class="ai-card-list">
+          <li>OWASP AI Exchange (free, flagship project)</li>
+          <li>Lakera AI Gandalf — prompt injection CTF</li>
+          <li>PortSwigger LLM Security Labs (4 labs)</li>
+          <li>NVIDIA Garak — LLM vulnerability scanner</li>
+          <li>Microsoft PyRIT — AI red-teaming framework</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS TABLE -->
+<section class="certs-section">
+  <div class="section-label">🏅 Certifications Roadmap</div>
+  <div class="certs-title">Certifications by Phase & Priority</div>
+  <table class="cert-table">
+    <thead>
+      <tr>
+        <th>Phase</th>
+        <th>Certification</th>
+        <th>Level</th>
+        <th>Focus Area</th>
+        <th>Salary Impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1–2</td>
+        <td><span class="cert-name">CompTIA Security+</span><span class="cert-by">CompTIA</span></td>
+        <td><span class="level-badge lvl-beginner">BEGINNER</span></td>
+        <td>General security foundations</td>
+        <td>+$10K–15K entry boost</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><span class="cert-name">AWS Cloud Practitioner (CLF-C02)</span><span class="cert-by">Amazon Web Services</span></td>
+        <td><span class="level-badge lvl-beginner">BEGINNER</span></td>
+        <td>AWS fundamentals</td>
+        <td>Foundation for all AWS certs</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><span class="cert-name">AWS Solutions Architect Associate</span><span class="cert-by">Amazon Web Services</span></td>
+        <td><span class="level-badge lvl-mid">MID</span></td>
+        <td>Cloud architecture</td>
+        <td>+$20K–30K</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><span class="cert-name">Certified Cloud Security Professional (CCSP)</span><span class="cert-by">ISC2</span></td>
+        <td><span class="level-badge lvl-mid">MID</span></td>
+        <td>Cloud security architecture</td>
+        <td>+$25K–35K</td>
+      </tr>
+      <tr>
+        <td>4–5</td>
+        <td><span class="cert-name">AWS Security Specialty (SCS-C02)</span><span class="cert-by">Amazon Web Services</span></td>
+        <td><span class="level-badge lvl-advanced">ADVANCED</span></td>
+        <td>AWS security deep dive</td>
+        <td>Highest-value AWS cert, +$30K</td>
+      </tr>
+      <tr>
+        <td>4–5</td>
+        <td><span class="cert-name">Azure Security Engineer Associate (AZ-500)</span><span class="cert-by">Microsoft</span></td>
+        <td><span class="level-badge lvl-mid">MID</span></td>
+        <td>Azure cloud security</td>
+        <td>+$20K in Azure-heavy orgs</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><span class="cert-name">Certified Ethical Hacker (CEH)</span><span class="cert-by">EC-Council</span></td>
+        <td><span class="level-badge lvl-mid">MID</span></td>
+        <td>Ethical hacking</td>
+        <td>+$15K, great for AppSec</td>
+      </tr>
+      <tr>
+        <td>5–6</td>
+        <td><span class="cert-name">OSCP</span><span class="cert-by">Offensive Security</span></td>
+        <td><span class="level-badge lvl-advanced">ADVANCED</span></td>
+        <td>Penetration testing</td>
+        <td>Premium salary unlock +$40K</td>
+      </tr>
+      <tr>
+        <td>6+</td>
+        <td><span class="cert-name">CISSP</span><span class="cert-by">ISC2</span></td>
+        <td><span class="level-badge lvl-advanced">ADVANCED</span></td>
+        <td>Security management & architecture</td>
+        <td>Senior/CISO track, +$50K+</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- LINKEDIN SKILLS -->
+<section class="linkedin-section">
+  <div class="linkedin-inner">
+    <div class="section-label">🔗 LinkedIn & Job Market Data</div>
+    <div class="linkedin-title">Skills to Add to Your LinkedIn Profile</div>
+    <p class="linkedin-sub">Based on real LinkedIn job postings analysis for AppSec + Cloud Security roles (2025–2026). Add these as you learn them.</p>
+
+    <p style="font-size:11px;font-family:'Space Mono',monospace;color:var(--muted);margin-bottom:14px;">
+      🔵 CORE &nbsp; 🟠 WEB DEV &nbsp; 🟣 APPSEC &nbsp; 🟢 CLOUD &nbsp; 🩷 AI &nbsp; 🟡 SOFT SKILLS
+    </p>
+
+    <div class="skills-cloud">
+      <span class="skill-pill sp-core">Network Security</span>
+      <span class="skill-pill sp-core">Linux Administration</span>
+      <span class="skill-pill sp-core">Node.js Scripting</span>
+      <span class="skill-pill sp-core">Incident Response</span>
+      <span class="skill-pill sp-core">SIEM (Splunk/ELK)</span>
+      <span class="skill-pill sp-core">Vulnerability Assessment</span>
+      <span class="skill-pill" style="color:#f97316;border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.05);">HTML/CSS/JavaScript</span>
+      <span class="skill-pill" style="color:#f97316;border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.05);">SQL & Databases</span>
+      <span class="skill-pill" style="color:#f97316;border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.05);">REST APIs</span>
+      <span class="skill-pill" style="color:#f97316;border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.05);">HTTP Protocol</span>
+      <span class="skill-pill" style="color:#f97316;border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.05);">JWT / OAuth 2.0</span>
+      <span class="skill-pill" style="color:#f97316;border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.05);">Session Management</span>
+      <span class="skill-pill sp-appsec">OWASP Top 10</span>
+      <span class="skill-pill sp-appsec">Burp Suite</span>
+      <span class="skill-pill sp-appsec">Penetration Testing</span>
+      <span class="skill-pill sp-appsec">SAST / DAST</span>
+      <span class="skill-pill sp-appsec">Secure Code Review</span>
+      <span class="skill-pill sp-appsec">Threat Modeling</span>
+      <span class="skill-pill sp-appsec">Bug Bounty</span>
+      <span class="skill-pill sp-appsec">API Security</span>
+      <span class="skill-pill sp-appsec">DevSecOps</span>
+      <span class="skill-pill sp-appsec">CI/CD Security</span>
+      <span class="skill-pill sp-cloud">AWS Security</span>
+      <span class="skill-pill sp-cloud">IAM (Identity & Access Management)</span>
+      <span class="skill-pill sp-cloud">Terraform</span>
+      <span class="skill-pill sp-cloud">Kubernetes Security</span>
+      <span class="skill-pill sp-cloud">Container Security (Docker)</span>
+      <span class="skill-pill sp-cloud">Cloud Architecture</span>
+      <span class="skill-pill sp-cloud">AWS GuardDuty</span>
+      <span class="skill-pill sp-cloud">CSPM Tools</span>
+      <span class="skill-pill sp-cloud">Zero Trust Architecture</span>
+      <span class="skill-pill sp-cloud">Azure Security</span>
+      <span class="skill-pill sp-cloud">GCP Security</span>
+      <span class="skill-pill sp-ai">AI/LLM Security</span>
+      <span class="skill-pill sp-ai">Prompt Injection Defense</span>
+      <span class="skill-pill sp-ai">AI Red Teaming</span>
+      <span class="skill-pill sp-ai">OWASP LLM Top 10</span>
+      <span class="skill-pill sp-ai">AI-Powered Security Tools</span>
+      <span class="skill-pill sp-ai">RAG Pipeline Security</span>
+      <span class="skill-pill sp-ai">LangChain.js</span>
+      <span class="skill-pill sp-ai">Vector DB Security</span>
+      <span class="skill-pill" style="color:#f97316;border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.05);">Cloudflare Workers/Pages</span>
+      <span class="skill-pill sp-soft">Risk Assessment</span>
+      <span class="skill-pill sp-soft">Cross-team Collaboration</span>
+      <span class="skill-pill sp-soft">Security Documentation</span>
+      <span class="skill-pill sp-soft">Communication</span>
+      <span class="skill-pill sp-soft">Problem-Solving</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>📚 Key Free Platforms: TryHackMe · PortSwigger Academy · HTB Academy · PwnedLabs · Flaws.cloud · AWS Skill Builder · OWASP AI Exchange</p>
+    <p style="margin-top: 8px; color: rgba(100,116,139,0.6);">Roadmap compiled from TryHackMe, AWS, ZipRecruiter, LinkedIn, OWASP, CompTIA & industry research — April 2026 | Customized for Node.js + AI Engineering track</p>
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════
+//  INTERACTIVE ROADMAP — Progress Tracker
+// ══════════════════════════════════════════════
+
+const STORAGE_KEY = 'appsec_roadmap_v2';
+
+// Phase metadata
+const PHASE_NAMES = [
+  'Foundation & Core IT',
+  'Web Dev for Security Pros',
+  'Web Security & AppSec',
+  'Cloud Foundations',
+  'Advanced AppSec & Cloud',
+  'Specialization & Bug Bounty',
+  'Job Ready & Career Launch'
+];
+
+let state = { checked: {}, phases: {}, notes: '' };
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) state = JSON.parse(raw);
+  } catch(e) {}
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ── Assign IDs to all skill-list items ──
+function assignItemIds() {
+  document.querySelectorAll('.phase').forEach((phase, pi) => {
+    phase.dataset.phaseIdx = pi;
+    phase.querySelectorAll('.skill-list li').forEach((li, li_i) => {
+      const id = `p${pi}_i${li_i}`;
+      li.dataset.itemId = id;
+    });
+  });
+}
+
+// ── Inject phase mini-bar + badge into each sidebar ──
+function injectPhaseSidebars() {
+  document.querySelectorAll('.phase').forEach((phase, pi) => {
+    const sidebar = phase.querySelector('.phase-sidebar');
+    if (!sidebar) return;
+
+    // Mini progress bar
+    const miniBar = document.createElement('div');
+    miniBar.className = 'phase-mini-bar';
+    miniBar.innerHTML = `<div class="phase-mini-fill" id="phase-mini-fill-${pi}"></div>`;
+    sidebar.appendChild(miniBar);
+
+    // Done badge
+    const badge = document.createElement('button');
+    badge.className = 'phase-done-badge';
+    badge.id = `phase-badge-${pi}`;
+    badge.innerHTML = `<span class="badge-icon">◻</span> MARK DONE`;
+    badge.onclick = () => togglePhaseDone(pi);
+    sidebar.appendChild(badge);
+  });
+}
+
+// ── Wire up skill-list click listeners ──
+function wireCheckboxes() {
+  document.querySelectorAll('.skill-list li').forEach(li => {
+    li.addEventListener('click', () => {
+      const id = li.dataset.itemId;
+      state.checked[id] = !state.checked[id];
+      li.classList.toggle('done', !!state.checked[id]);
+      saveState();
+      updateAll();
+    });
+  });
+}
+
+// ── Toggle phase done ──
+function togglePhaseDone(pi) {
+  state.phases[pi] = !state.phases[pi];
+
+  // If marking done, also check all items in that phase
+  const phase = document.querySelector(`.phase[data-phase-idx="${pi}"]`);
+  if (phase) {
+    phase.querySelectorAll('.skill-list li').forEach(li => {
+      const id = li.dataset.itemId;
+      state.checked[id] = !!state.phases[pi];
+      li.classList.toggle('done', !!state.phases[pi]);
+    });
+  }
+  saveState();
+  updateAll();
+}
+
+// ── Update all visual indicators ──
+function updateAll() {
+  const allItems = document.querySelectorAll('.skill-list li');
+  const total = allItems.length;
+  let doneCount = 0;
+
+  allItems.forEach(li => {
+    if (state.checked[li.dataset.itemId]) doneCount++;
+  });
+
+  // Global progress bar
+  const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+
+  // Per-phase mini bars + badges
+  document.querySelectorAll('.phase').forEach((phase, pi) => {
+    const items = phase.querySelectorAll('.skill-list li');
+    const phaseDone = Array.from(items).filter(li => state.checked[li.dataset.itemId]).length;
+    const phasePct = items.length > 0 ? Math.round((phaseDone / items.length) * 100) : 0;
+
+    const fill = document.getElementById(`phase-mini-fill-${pi}`);
+    if (fill) fill.style.width = phasePct + '%';
+
+    const badge = document.getElementById(`phase-badge-${pi}`);
+    if (badge) {
+      const isDone = !!state.phases[pi];
+      badge.classList.toggle('completed', isDone);
+      badge.innerHTML = isDone
+        ? `<span class="badge-icon">✓</span> COMPLETED`
+        : `<span class="badge-icon">◻</span> MARK DONE`;
+    }
+
+    // Card-level done state
+    phase.querySelectorAll('.skill-card').forEach(card => {
+      const cardItems = card.querySelectorAll('.skill-list li');
+      const allDone = cardItems.length > 0 && Array.from(cardItems).every(li => state.checked[li.dataset.itemId]);
+      card.classList.toggle('card-done', allDone);
+    });
+  });
+
+  // Current active phase indicator
+  updatePhaseIndicator();
+}
+
+function updatePhaseIndicator() {
+  let activePhase = null;
+  document.querySelectorAll('.phase').forEach((phase, pi) => {
+    if (state.phases[pi]) return; // skip completed
+    if (activePhase === null) activePhase = pi;
+  });
+  const label = document.getElementById('cur-phase-label');
+  if (label) {
+    label.textContent = activePhase !== null
+      ? `Phase ${String(activePhase + 1).padStart(2,'0')} — ${PHASE_NAMES[activePhase] || ''}`
+      : '🎉 ALL PHASES DONE';
+  }
+}
+
+// ── Restore checked state from storage ──
+function restoreState() {
+  document.querySelectorAll('.skill-list li').forEach(li => {
+    const id = li.dataset.itemId;
+    if (state.checked[id]) li.classList.add('done');
+  });
+}
+
+// ── Notes ──
+function toggleNotes() {
+  const body = document.getElementById('notes-body');
+  const arrow = document.getElementById('notes-arrow');
+  const isOpen = body.classList.toggle('open');
+  arrow.textContent = isOpen ? '▼' : '▲';
+}
+
+function saveNotes() {
+  state.notes = document.getElementById('notes-textarea').value;
+  saveState();
+  const btn = document.getElementById('notes-save');
+  btn.textContent = 'SAVED ✓';
+  setTimeout(() => btn.textContent = 'SAVE NOTES', 1500);
+}
+
+function restoreNotes() {
+  const ta = document.getElementById('notes-textarea');
+  if (ta && state.notes) ta.value = state.notes;
+}
+
+// ── Auto-save notes on type ──
+document.addEventListener('DOMContentLoaded', () => {
+  const ta = document.getElementById('notes-textarea');
+  if (ta) {
+    ta.addEventListener('input', () => {
+      state.notes = ta.value;
+      saveState();
+    });
+  }
+});
+
+// ── Reset everything ──
+function resetAll() {
+  if (!confirm('Reset ALL progress? This cannot be undone.')) return;
+  state = { checked: {}, phases: {}, notes: state.notes };
+  saveState();
+  document.querySelectorAll('.skill-list li').forEach(li => li.classList.remove('done'));
+  document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('card-done'));
+  updateAll();
+}
+
+// ── Keyboard shortcut: N = toggle notes ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'n' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'TEXTAREA') {
+    toggleNotes();
+  }
+});
+
+// ── INIT ──
+loadState();
+assignItemIds();
+injectPhaseSidebars();
+wireCheckboxes();
+restoreState();
+restoreNotes();
+updateAll();
+</script>
+
+</body>
+</html>

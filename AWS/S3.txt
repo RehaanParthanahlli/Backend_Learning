@@ -1,0 +1,8 @@
+S3 is like a giant online warehouse:
+- Warehouse = S3 service.
+- Storage rooms = Buckets (containers for data).
+- Boxes = Objects (files + metadata).
+- Labels on boxes = Keys (unique names for objects).
+- Security guards = IAM policies + bucket policies.
+- You can store unlimited boxes, and retrieve them anytime.
+- Different storage classes = cold storage vs. fast-access shelves.

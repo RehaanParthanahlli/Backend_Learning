@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en" data-color-scheme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Routing & OSPF Visual Guide</title>
+  <style>
+    :root {
+      --color-white: rgba(255, 255, 255, 1);
+      --color-black: rgba(0, 0, 0, 1);
+      --color-cream-50: rgba(252, 252, 249, 1);
+      --color-cream-100: rgba(255, 255, 253, 1);
+      --color-gray-200: rgba(245, 245, 245, 1);
+      --color-gray-300: rgba(167, 169, 169, 1);
+      --color-gray-400: rgba(119, 124, 124, 1);
+      --color-slate-500: rgba(98, 108, 113, 1);
+      --color-brown-600: rgba(94, 82, 64, 1);
+      --color-charcoal-700: rgba(31, 33, 33, 1);
+      --color-charcoal-800: rgba(38, 40, 40, 1);
+      --color-slate-900: rgba(19, 52, 59, 1);
+      --color-teal-300: rgba(50, 184, 198, 1);
+      --color-teal-400: rgba(45, 166, 178, 1);
+      --color-teal-500: rgba(33, 128, 141, 1);
+      --color-teal-600: rgba(29, 116, 128, 1);
+      --color-teal-700: rgba(26, 104, 115, 1);
+      --color-teal-800: rgba(41, 150, 161, 1);
+      --color-red-400: rgba(255, 84, 89, 1);
+      --color-red-500: rgba(192, 21, 47, 1);
+      --color-orange-400: rgba(230, 129, 97, 1);
+      --color-orange-500: rgba(168, 75, 47, 1);
+
+      --color-brown-600-rgb: 94, 82, 64;
+      --color-teal-500-rgb: 33, 128, 141;
+      --color-slate-900-rgb: 19, 52, 59;
+      --color-slate-500-rgb: 98, 108, 113;
+      --color-red-500-rgb: 192, 21, 47;
+      --color-red-400-rgb: 255, 84, 89;
+      --color-orange-500-rgb: 168, 75, 47;
+      --color-orange-400-rgb: 230, 129, 97;
+
+      --color-bg-1: rgba(59, 130, 246, 0.08);
+      --color-bg-2: rgba(245, 158, 11, 0.08);
+      --color-bg-3: rgba(34, 197, 94, 0.08);
+      --color-bg-4: rgba(239, 68, 68, 0.08);
+      --color-bg-5: rgba(147, 51, 234, 0.08);
+      --color-bg-6: rgba(249, 115, 22, 0.08);
+      --color-bg-7: rgba(236, 72, 153, 0.08);
+      --color-bg-8: rgba(6, 182, 212, 0.08);
+
+      --color-background: var(--color-charcoal-700);
+      --color-surface: var(--color-charcoal-800);
+      --color-text: var(--color-gray-200);
+      --color-text-secondary: rgba(245, 245, 245, 0.7);
+      --color-primary: var(--color-teal-300);
+      --color-primary-hover: var(--color-teal-400);
+      --color-primary-active: var(--color-teal-800);
+      --color-secondary: rgba(119, 124, 124, 0.15);
+      --color-secondary-hover: rgba(119, 124, 124, 0.25);
+      --color-secondary-active: rgba(119, 124, 124, 0.3);
+      --color-border: rgba(119, 124, 124, 0.3);
+      --color-error: var(--color-red-400);
+      --color-success: var(--color-teal-300);
+      --color-warning: var(--color-orange-400);
+      --color-info: var(--color-gray-300);
+      --color-focus-ring: rgba(50, 184, 198, 0.4);
+      --color-btn-primary-text: var(--color-slate-900);
+      --color-card-border: rgba(119, 124, 124, 0.2);
+      --color-card-border-inner: rgba(119, 124, 124, 0.15);
+      --color-select-caret: rgba(245, 245, 245, 0.8);
+
+      --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
+        BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
+        Monaco, Consolas, monospace;
+      --font-size-xs: 11px;
+      --font-size-sm: 12px;
+      --font-size-base: 14px;
+      --font-size-md: 14px;
+      --font-size-lg: 16px;
+      --font-size-xl: 18px;
+      --font-size-2xl: 20px;
+      --font-size-3xl: 24px;
+      --font-size-4xl: 30px;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 550;
+      --font-weight-bold: 600;
+      --line-height-tight: 1.2;
+      --line-height-normal: 1.5;
+      --letter-spacing-tight: -0.01em;
+
+      --space-0: 0;
+      --space-1: 1px;
+      --space-2: 2px;
+      --space-4: 4px;
+      --space-6: 6px;
+      --space-8: 8px;
+      --space-10: 10px;
+      --space-12: 12px;
+      --space-16: 16px;
+      --space-20: 20px;
+      --space-24: 24px;
+      --space-32: 32px;
+
+      --radius-sm: 6px;
+      --radius-base: 8px;
+      --radius-md: 10px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
+        0 2px 4px -1px rgba(0, 0, 0, 0.02);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04),
+        0 4px 6px -2px rgba(0, 0, 0, 0.02);
+
+      --duration-fast: 150ms;
+      --duration-normal: 250ms;
+      --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+
+      --container-sm: 640px;
+      --container-md: 768px;
+      --container-lg: 1024px;
+      --container-xl: 1280px;
+
+      --color-success-rgb: 50, 184, 198;
+      --color-error-rgb: 255, 84, 89;
+      --color-warning-rgb: 230, 129, 97;
+      --color-info-rgb: 167, 169, 169;
+      --status-bg-opacity: 0.15;
+      --status-border-opacity: 0.25;
+    }
+
+    html {
+      font-size: var(--font-size-base);
+      font-family: var(--font-family-base);
+      line-height: var(--line-height-normal);
+      color: var(--color-text);
+      background-color: var(--color-background);
+      -webkit-font-smoothing: antialiased;
+      box-sizing: border-box;
+    }
+    *, *::before, *::after {
+      box-sizing: inherit;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(
+          circle at top left,
+          rgba(45, 166, 178, 0.12),
+          transparent 50%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(192, 21, 47, 0.08),
+          transparent 55%
+        ),
+        var(--color-background);
+    }
+    h1, h2, h3 {
+      margin: 0;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-tight);
+      color: var(--color-white);
+    }
+    h1 { font-size: var(--font-size-3xl); }
+    h2 { font-size: var(--font-size-2xl); }
+    h3 { font-size: var(--font-size-xl); }
+
+    .container {
+      max-width: var(--container-xl);
+      margin: 0 auto;
+      padding: var(--space-16);
+    }
+
+    .shell {
+      background: radial-gradient(
+          circle at top,
+          rgba(50, 184, 198, 0.18),
+          transparent 55%
+        ),
+        var(--color-surface);
+      border-radius: 24px;
+      border: 1px solid rgba(119, 124, 124, 0.35);
+      box-shadow: var(--shadow-lg);
+      padding: var(--space-16);
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: var(--space-16);
+      min-height: 540px;
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-16);
+    }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(50, 184, 198, 0.5);
+      color: var(--color-primary);
+      font-size: var(--font-size-xs);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(19, 52, 59, 0.65);
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--color-primary);
+    }
+    .subtitle {
+      margin-top: 6px;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      max-width: 440px;
+    }
+
+    .graph-card, .info-card {
+      background: rgba(19, 52, 59, 0.85);
+      border-radius: 18px;
+      border: 1px solid rgba(119, 124, 124, 0.4);
+      padding: var(--space-12);
+      position: relative;
+      overflow: hidden;
+    }
+    .graph-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(
+          rgba(255, 255, 255, 0.03) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.03) 1px,
+          transparent 1px
+        );
+      background-size: 28px 28px;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .graph-inner {
+      position: relative;
+      z-index: 1;
+      height: 420px;
+    }
+
+    .info-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+    }
+
+    .mode-toggle {
+      display: inline-flex;
+      background: rgba(31, 33, 33, 0.9);
+      border-radius: 999px;
+      padding: 3px;
+      border: 1px solid rgba(119, 124, 124, 0.6);
+      margin-bottom: 6px;
+    }
+    .mode-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-xs);
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background var(--duration-fast) var(--ease-standard),
+        color var(--duration-fast) var(--ease-standard),
+        transform var(--duration-fast) var(--ease-standard);
+    }
+    .mode-btn span.icon {
+      font-size: 11px;
+    }
+    .mode-btn.active {
+      background: linear-gradient(
+        135deg,
+        rgba(50, 184, 198, 0.18),
+        rgba(50, 184, 198, 0.4)
+      );
+      color: var(--color-btn-primary-text);
+      transform: translateY(-0.5px);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      border-radius: 999px;
+      border: 1px solid rgba(119, 124, 124, 0.45);
+      padding: 4px 9px;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(19, 52, 59, 0.95);
+    }
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+    }
+    .chip-dot.green {
+      background: rgba(50, 184, 198, 0.9);
+    }
+    .chip-dot.red {
+      background: rgba(255, 84, 89, 0.9);
+    }
+    .chip-dot.orange {
+      background: rgba(230, 129, 97, 0.9);
+    }
+
+    .section-title {
+      font-size: var(--font-size-sm);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 245, 245, 0.7);
+      margin-bottom: 4px;
+    }
+    .section-body {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: var(--font-size-xs);
+    }
+    .step {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .step-index {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(50, 184, 198, 0.22);
+      color: var(--color-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+    .step-text {
+      color: var(--color-text-secondary);
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all var(--duration-fast) var(--ease-standard);
+      background: var(--color-primary);
+      color: var(--color-btn-primary-text);
+      box-shadow: 0 0 0 1px rgba(19, 52, 59, 0.9);
+    }
+    .btn:hover {
+      background: var(--color-primary-hover);
+      transform: translateY(-0.5px);
+    }
+    .btn.secondary {
+      background: rgba(19, 52, 59, 0.9);
+      color: var(--color-text-secondary);
+      border: 1px solid rgba(119, 124, 124, 0.6);
+      box-shadow: none;
+    }
+    .btn.secondary:hover {
+      background: rgba(50, 184, 198, 0.08);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .select {
+      background: rgba(19, 52, 59, 0.95);
+      border-radius: 999px;
+      border: 1px solid rgba(119, 124, 124, 0.6);
+      color: var(--color-text-secondary);
+      padding: 6px 26px 6px 10px;
+      font-size: var(--font-size-xs);
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 13px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: var(--font-size-xs);
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--color-text-secondary);
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .note {
+      font-size: 11px;
+      color: rgba(245, 245, 245, 0.6);
+      margin-top: 4px;
+    }
+
+    .download-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+      white-space: nowrap;
+    }
+
+    @font-face {
+      font-family: 'FKGroteskNeue';
+      src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
+        format('woff2');
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          <span>Interactive Routing Story</span>
+        </div>
+        <h1>How Routers Choose Paths</h1>
+        <p class="subtitle">
+          Visualize static vs dynamic routing, link‑state flooding, and Dijkstra’s
+          algorithm on a small network.
+        </p>
+      </div>
+      <div class="chip-row">
+        <div class="chip">
+          <span class="chip-dot green"></span>
+          <span>Shortest path = lowest cost</span>
+        </div>
+        <div class="chip">
+          <span class="chip-dot.orange"></span>
+          <span>Cost ≈ delay / congestion</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="graph-card" aria-label="Network graph visual">
+        <div class="graph-inner">
+          <canvas id="graphCanvas"></canvas>
+        </div>
+      </section>
+
+      <section class="info-card" aria-label="Routing explanation and controls">
+        <div>
+          <div class="mode-toggle" role="tablist">
+            <button class="mode-btn active" id="modeRouting" role="tab">
+              <span class="icon">➜</span>
+              Routing overview
+            </button>
+            <button class="mode-btn" id="modeFlood" role="tab">
+              <span class="icon">☁</span>
+              Link‑state flooding
+            </button>
+            <button class="mode-btn" id="modeDijkstra" role="tab">
+              <span class="icon">⚙</span>
+              Dijkstra table
+            </button>
+          </div>
+
+          <div id="panelRouting">
+            <h3>1. Static vs dynamic routing</h3>
+            <p class="section-body">
+              Think of each router as a city junction. The numbers on links are
+              like “traffic cost” (delay). Routers try to forward packets along
+              the lowest total cost from source to destination.
+            </p>
+
+            <div class="steps">
+              <div class="step">
+                <div class="step-index">A</div>
+                <div class="step-text">
+                  <strong>Static routing</strong>: paths are configured by hand.
+                  If a road closes, a human must update routes.
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-index">B</div>
+                <div class="step-text">
+                  <strong>Dynamic routing</strong>: routers sense link cost /
+                  failures and recompute best paths automatically.
+                </div>
+              </div>
+            </div>
+
+            <div class="controls">
+              <label class="sr-only" for="routeSelect">Choose source and destination</label>
+              <select id="routeSelect" class="select">
+                <option value="A-I">Route: A → I</option>
+                <option value="B-F">Route: B → F</option>
+                <option value="C-H">Route: C → H</option>
+              </select>
+              <button class="btn" id="btnPlayRoute">Play packet journey</button>
+              <button class="btn secondary" id="btnReset">Reset</button>
+            </div>
+
+            <div class="legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background: rgba(50,184,198,0.9);"></span>
+                <span>Normal link</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: rgba(255,84,89,0.9);"></span>
+                <span>Failed link</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: rgba(250,250,250,0.95);"></span>
+                <span>Packet path</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="panelFlood" hidden>
+            <h3>2. Reliable flooding (link state)</h3>
+            <p class="section-body">
+              Each router advertises its links in a small message called a
+              link‑state advertisement (LSA): neighbor, cost, and health
+              (up/down). These LSAs are flooded like gossip.
+            </p>
+            <div class="steps">
+              <div class="step">
+                <div class="step-index">1</div>
+                <div class="step-text">
+                  Router <strong>D</strong> creates an LSA describing its
+                  neighbors and costs.
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-index">2</div>
+                <div class="step-text">
+                  Neighbors add it to their database, then forward it to their
+                  neighbors.
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-index">3</div>
+                <div class="step-text">
+                  Each LSA has a unique ID + sequence number. If a router sees
+                  the same LSA again, it drops it &mdash; no infinite loops.
+                </div>
+              </div>
+            </div>
+            <div class="controls">
+              <button class="btn" id="btnPlayFlood">Play flooding</button>
+              <button class="btn secondary" id="btnFloodOnce">
+                Step flooding
+              </button>
+            </div>
+            <p class="note">
+              In OSPF, this happens inside areas. Only some routers (area
+              border routers) share summaries between areas to keep things
+              scalable.
+            </p>
+          </div>
+
+          <div id="panelDijkstra" hidden>
+            <h3>3. Dijkstra’s shortest‑path table</h3>
+            <p class="section-body">
+              Once every router knows the full map, it runs Dijkstra locally:
+              from itself as source, it grows the tree of lowest‑cost paths.
+            </p>
+            <div class="controls">
+              <label class="sr-only" for="sourceSelect">Choose source router</label>
+              <select id="sourceSelect" class="select">
+                <option value="A">Source: A</option>
+                <option value="D">Source: D</option>
+                <option value="G">Source: G</option>
+              </select>
+              <button class="btn" id="btnStepDijkstra">Next step</button>
+              <button class="btn secondary" id="btnResetDijkstra">
+                Reset table
+              </button>
+            </div>
+            <div id="tableContainer" style="margin-top:8px; max-height:220px; overflow:auto;">
+              <table id="dTable" style="width:100%; border-collapse:collapse; font-size:12px;">
+                <thead>
+                  <tr style="background:rgba(50,184,198,0.14);">
+                    <th style="padding:4px 6px; text-align:left; border-bottom:1px solid rgba(119,124,124,0.4);">Node</th>
+                    <th style="padding:4px 6px; text-align:left; border-bottom:1px solid rgba(119,124,124,0.4);">Dist</th>
+                    <th style="padding:4px 6px; text-align:left; border-bottom:1px solid rgba(119,124,124,0.4);">Prev</th>
+                    <th style="padding:4px 6px; text-align:left; border-bottom:1px solid rgba(119,124,124,0.4);">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dTableBody"></tbody>
+              </table>
+            </div>
+            <p class="note">
+              Green rows are “fixed” (shortest distance known). Gray rows are
+              still tentative.
+            </p>
+          </div>
+        </div>
+
+        <div class="download-row">
+          <button class="btn secondary" id="btnDownload">
+            ⬇ Save as HTML file
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Basic graph geometry (roughly matching your picture)
+    const nodes = {
+      A: { x: 60, y: 210 },
+      B: { x: 60, y: 360 },
+      C: { x: 220, y: 90 },
+      D: { x: 220, y: 210 },
+      E: { x: 220, y: 360 },
+      F: { x: 520, y: 90 },
+      G: { x: 520, y: 210 },
+      H: { x: 520, y: 360 },
+      I: { x: 720, y: 210 }
+    };
+
+    const edges = [
+      { u: "A", v: "B", w: 1 },
+      { u: "A", v: "C", w: 4 },
+      { u: "A", v: "D", w: 8 },
+      { u: "B", v: "D", w: 2 },
+      { u: "B", v: "E", w: 1 },
+      { u: "C", v: "D", w: 9 },
+      { u: "C", v: "F", w: 10 },
+      { u: "D", v: "E", w: 5 },
+      { u: "D", v: "G", w: 3 },
+      { u: "D", v: "H", w: 4 },
+      { u: "E", v: "H", w: 5 },
+      { u: "F", v: "G", w: 2 },
+      { u: "F", v: "I", w: 1 },
+      { u: "G", v: "I", w: 4 },
+      { u: "H", v: "I", w: 6 }
+    ];
+
+    const canvas = document.getElementById("graphCanvas");
+    const ctx = canvas.getContext("2d");
+    let width, height, scale;
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * window.devicePixelRatio;
+      canvas.height = height * window.devicePixelRatio;
+      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+      const baseWidth = 800;
+      scale = width / baseWidth;
+      drawGraph();
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function t(px) {
+      return px * scale;
+    }
+
+    function drawGraph(highlightPath = [], floodStep = null, dijkstraVisited = new Set()) {
+      ctx.clearRect(0, 0, width, height);
+
+      const highlightSet = new Set();
+      for (let i = 0; i < highlightPath.length - 1; i++) {
+        const a = highlightPath[i];
+        const b = highlightPath[i + 1];
+        highlightSet.add(a + "-" + b);
+        highlightSet.add(b + "-" + a);
+      }
+
+      ctx.lineWidth = 2;
+      edges.forEach((e) => {
+        const n1 = nodes[e.u];
+        const n2 = nodes[e.v];
+        const key = e.u + "-" + e.v;
+        const isHighlight = highlightSet.has(key);
+        ctx.strokeStyle = isHighlight ? "#ffffff" : "rgba(50,184,198,0.75)";
+        ctx.globalAlpha = isHighlight ? 1 : 0.8;
+        ctx.beginPath();
+        ctx.moveTo(t(n1.x), t(n1.y));
+        ctx.lineTo(t(n2.x), t(n2.y));
+        ctx.stroke();
+
+        // weight label
+        const mx = (n1.x + n2.x) / 2;
+        const my = (n1.y + n2.y) / 2;
+        ctx.fillStyle = "rgba(0,0,0,0.85)";
+        ctx.beginPath();
+        ctx.arc(t(mx), t(my), t(10), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#f5f5f5";
+        ctx.font = `${t(11)}px FKGroteskNeue, system-ui`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(e.w, t(mx), t(my));
+      });
+
+      // optional flood glow
+      if (floodStep) {
+        ctx.globalAlpha = 0.16;
+        ctx.fillStyle = "rgba(50,184,198,0.9)";
+        floodStep.forEach((n) => {
+          const p = nodes[n];
+          ctx.beginPath();
+          ctx.arc(t(p.x), t(p.y), t(40), 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+      }
+
+      // draw nodes
+      Object.entries(nodes).forEach(([id, p]) => {
+        const r = t(16);
+        const isVisited = dijkstraVisited.has(id);
+        ctx.beginPath();
+        ctx.arc(t(p.x), t(p.y), r, 0, Math.PI * 2);
+        const grad = ctx.createRadialGradient(
+          t(p.x - 4),
+          t(p.y - 4),
+          0,
+          t(p.x),
+          t(p.y),
+          r
+        );
+        if (isVisited) {
+          grad.addColorStop(0, "rgba(50,184,198,1)");
+          grad.addColorStop(1, "rgba(26,104,115,1)");
+        } else {
+          grad.addColorStop(0, "rgba(33,128,141,1)");
+          grad.addColorStop(1, "rgba(19,52,59,1)");
+        }
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(0,0,0,0.8)";
+        ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = `${t(12)}px FKGroteskNeue, system-ui`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(id, t(p.x), t(p.y));
+      });
+    }
+
+    // Simple adjacency map
+    const adj = {};
+    edges.forEach((e) => {
+      if (!adj[e.u]) adj[e.u] = [];
+      if (!adj[e.v]) adj[e.v] = [];
+      adj[e.u].push({ v: e.v, w: e.w });
+      adj[e.v].push({ v: e.u, w: e.w });
+    });
+
+    function shortestPath(src, dst) {
+      const dist = {};
+      const prev = {};
+      const Q = new Set(Object.keys(nodes));
+      Object.keys(nodes).forEach((n) => (dist[n] = Infinity));
+      dist[src] = 0;
+
+      while (Q.size) {
+        let u = null;
+        let best = Infinity;
+        Q.forEach((n) => {
+          if (dist[n] < best) {
+            best = dist[n];
+            u = n;
+          }
+        });
+        if (u === null) break;
+        Q.delete(u);
+        if (u === dst) break;
+        (adj[u] || []).forEach(({ v, w }) => {
+          if (!Q.has(v)) return;
+          const nd = dist[u] + w;
+          if (nd < dist[v]) {
+            dist[v] = nd;
+            prev[v] = u;
+          }
+        });
+      }
+      const path = [];
+      let cur = dst;
+      if (!prev[cur] && cur !== src) return [];
+      while (cur !== undefined) {
+        path.unshift(cur);
+        if (cur === src) break;
+        cur = prev[cur];
+      }
+      return path;
+    }
+
+    // Packet journey animation
+    const routeSelect = document.getElementById("routeSelect");
+    const btnPlayRoute = document.getElementById("btnPlayRoute");
+    const btnReset = document.getElementById("btnReset");
+
+    let routeAnim = null;
+
+    btnPlayRoute.addEventListener("click", () => {
+      const [s, d] = routeSelect.value.split("-");
+      const path = shortestPath(s, d);
+      if (!path.length) return;
+      startRouteAnim(path);
+    });
+
+    btnReset.addEventListener("click", () => {
+      cancelAnim();
+      drawGraph();
+    });
+
+    function cancelAnim() {
+      if (routeAnim) {
+        cancelAnimationFrame(routeAnim);
+        routeAnim = null;
+      }
+      floodPlaying = false;
+      dijkstraStepIdx = 0;
+    }
+
+    function startRouteAnim(path) {
+      cancelAnim();
+      const hops = [];
+      for (let i = 0; i < path.length - 1; i++) {
+        hops.push([path[i], path[i + 1]]);
+      }
+      let segIndex = 0;
+      let tParam = 0;
+
+      function step() {
+        drawGraph(path.slice(0, segIndex + 1));
+        const [u, v] = hops[segIndex];
+        const from = nodes[u];
+        const to = nodes[v];
+        const x = from.x + (to.x - from.x) * tParam;
+        const y = from.y + (to.y - from.y) * tParam;
+
+        ctx.beginPath();
+        ctx.arc(t(x), t(y), t(7), 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(t(x), t(y), t(7), 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(0,0,0,0.9)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        tParam += 0.02;
+        if (tParam >= 1) {
+          tParam = 0;
+          segIndex++;
+          if (segIndex >= hops.length) {
+            drawGraph(path);
+            return;
+          }
+        }
+        routeAnim = requestAnimationFrame(step);
+      }
+      routeAnim = requestAnimationFrame(step);
+    }
+
+    // Flooding animation (very simplified BFS from D)
+    const btnPlayFlood = document.getElementById("btnPlayFlood");
+    const btnFloodOnce = document.getElementById("btnFloodOnce");
+    let floodLevels = [];
+    let floodIdx = 0;
+    let floodPlaying = false;
+
+    function computeFloodLevels(origin = "D") {
+      const visited = new Set([origin]);
+      const queue = [origin];
+      floodLevels = [[origin]];
+      while (queue.length) {
+        const nextLevel = [];
+        const currentBatch = [...queue];
+        queue.length = 0;
+        currentBatch.forEach((u) => {
+          (adj[u] || []).forEach(({ v }) => {
+            if (!visited.has(v)) {
+              visited.add(v);
+              nextLevel.push(v);
+              queue.push(v);
+            }
+          });
+        });
+        if (nextLevel.length) floodLevels.push(nextLevel);
+      }
+      floodIdx = 0;
+    }
+    computeFloodLevels();
+
+    function showFloodStep() {
+      const seen = new Set();
+      for (let i = 0; i <= floodIdx && i < floodLevels.length; i++) {
+        floodLevels[i].forEach((n) => seen.add(n));
+      }
+      drawGraph([], seen);
+    }
+
+    btnFloodOnce.addEventListener("click", () => {
+      cancelAnim();
+      floodIdx = Math.min(floodIdx + 1, floodLevels.length - 1);
+      showFloodStep();
+    });
+
+    btnPlayFlood.addEventListener("click", () => {
+      cancelAnim();
+      floodPlaying = true;
+      floodIdx = 0;
+      function step() {
+        showFloodStep();
+        floodIdx++;
+        if (floodIdx >= floodLevels.length) {
+          floodPlaying = false;
+          return;
+        }
+        setTimeout(() => {
+          if (floodPlaying) requestAnimationFrame(step);
+        }, 600);
+      }
+      requestAnimationFrame(step);
+    });
+
+    // Dijkstra step‑by‑step (from chosen source)
+    const sourceSelect = document.getElementById("sourceSelect");
+    const btnStepDijkstra = document.getElementById("btnStepDijkstra");
+    const btnResetDijkstra = document.getElementById("btnResetDijkstra");
+    const tbody = document.getElementById("dTableBody");
+
+    let dijkstraState = null;
+    let dijkstraStepIdx = 0;
+
+    function initDijkstra(src) {
+      const dist = {};
+      const prev = {};
+      const Q = new Set(Object.keys(nodes));
+      Object.keys(nodes).forEach((n) => (dist[n] = Infinity));
+      dist[src] = 0;
+      dijkstraState = { src, dist, prev, Q, visited: new Set(), order: [] };
+      dijkstraStepIdx = 0;
+      updateTable();
+      drawGraph([], null, dijkstraState.visited);
+    }
+
+    function dijkstraStep() {
+      const st = dijkstraState;
+      if (!st) return;
+      const { dist, Q, visited } = st;
+      if (!Q.size) return;
+      let u = null;
+      let best = Infinity;
+      Q.forEach((n) => {
+        if (dist[n] < best) {
+          best = dist[n];
+          u = n;
+        }
+      });
+      if (u === null) return;
+      Q.delete(u);
+      visited.add(u);
+      st.order.push(u);
+      (adj[u] || []).forEach(({ v, w }) => {
+        if (!Q.has(v)) return;
+        const nd = dist[u] + w;
+        if (nd < dist[v]) {
+          dist[v] = nd;
+          st.prev[v] = u;
+        }
+      });
+      updateTable();
+      drawGraph([], null, visited);
+    }
+
+    function updateTable() {
+      const st = dijkstraState;
+      if (!st) return;
+      const { dist, prev, visited } = st;
+      const nodesList = Object.keys(nodes).sort();
+      tbody.innerHTML = "";
+      nodesList.forEach((n) => {
+        const tr = document.createElement("tr");
+        const isFixed = visited.has(n);
+        tr.style.background = isFixed
+          ? "rgba(50,184,198,0.14)"
+          : "rgba(31,33,33,0.7)";
+        tr.innerHTML = `
+          <td style="padding:3px 6px;">${n}</td>
+          <td style="padding:3px 6px;">${dist[n] === Infinity ? "∞" : dist[n]}</td>
+          <td style="padding:3px 6px;">${prev[n] || "-"}</td>
+          <td style="padding:3px 6px; color:${isFixed ? "#8ff1ff" : "#a7a9a9"};">
+            ${isFixed ? "fixed" : "tentative"}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    sourceSelect.addEventListener("change", () => {
+      initDijkstra(sourceSelect.value);
+    });
+    btnResetDijkstra.addEventListener("click", () => {
+      initDijkstra(sourceSelect.value);
+    });
+    btnStepDijkstra.addEventListener("click", () => {
+      dijkstraStep();
+    });
+
+    initDijkstra("A");
+
+    // Mode switching
+    const modeRouting = document.getElementById("modeRouting");
+    const modeFlood = document.getElementById("modeFlood");
+    const modeDijkstra = document.getElementById("modeDijkstra");
+    const panelRouting = document.getElementById("panelRouting");
+    const panelFlood = document.getElementById("panelFlood");
+    const panelDijkstra = document.getElementById("panelDijkstra");
+
+    function setMode(mode) {
+      modeRouting.classList.remove("active");
+      modeFlood.classList.remove("active");
+      modeDijkstra.classList.remove("active");
+      panelRouting.hidden = true;
+      panelFlood.hidden = true;
+      panelDijkstra.hidden = true;
+
+      cancelAnim();
+      if (mode === "routing") {
+        modeRouting.classList.add("active");
+        panelRouting.hidden = false;
+        drawGraph();
+      } else if (mode === "flood") {
+        modeFlood.classList.add("active");
+        panelFlood.hidden = false;
+        computeFloodLevels();
+        showFloodStep();
+      } else {
+        modeDijkstra.classList.add("active");
+        panelDijkstra.hidden = false;
+        initDijkstra(sourceSelect.value);
+      }
+    }
+
+    modeRouting.addEventListener("click", () => setMode("routing"));
+    modeFlood.addEventListener("click", () => setMode("flood"));
+    modeDijkstra.addEventListener("click", () => setMode("dijkstra"));
+
+    // Download as HTML file (self‑contained)
+    document.getElementById("btnDownload").addEventListener("click", () => {
+      const blob = new Blob(
+        [document.documentElement.outerHTML],
+        { type: "text/html" }
+      );
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "routing-visualizer.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>

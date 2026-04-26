@@ -1,0 +1,63 @@
+# 1. Install Node.js (from https://nodejs.org)
+#    Node.js installation includes npm (Node Package Manager).
+
+# 2. Verify installation
+node -v   # shows Node.js version
+npm -v    # shows npm version
+
+# 3. Create a project folder
+mkdir my-ai-project
+cd my-ai-project
+
+# 4. Initialize package.json
+npm init -y   # quick setup with defaults
+
+# 5. Install dependencies
+npm install express        # production dependency
+npm install --save-dev nodemon   # development dependency
+
+# 6. Example package.json (auto-generated + edited)
+#    This file defines project metadata, dependencies, and scripts.
+{
+  "name": "my-ai-project",
+  "version": "1.0.0",
+  "description": "Learning AI engineering with Node.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "author": "Rehaan",
+  "license": "ISC"
+}
+
+# 7. Create index.js
+cat > index.js << 'EOF'
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello AI Engineer!');
+});
+
+app.listen(3000, () => {
+  console.log('Server running on http://localhost:3000');
+});
+EOF
+
+# 8. Run project
+npm start   # runs "node index.js"
+npm run dev # runs with nodemon (auto-restarts on file changes)
+
+# Notes:
+# - node_modules/ folder stores installed packages. Never edit it directly.
+# - Delete node_modules? Restore with: npm install
+# - dependencies = needed in production
+# - devDependencies = only for development tools
+# - Scripts automate tasks (npm run <script>)

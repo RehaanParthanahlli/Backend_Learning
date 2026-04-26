@@ -1,0 +1,24 @@
+Note -
+    IAM is a core part of Cloud computing n Infrastructure.
+    Identity and Access Management (IAM) is a framework of policies, processes, and technologies that organizations use to manage digital identities and control user access to critical resources.
+
+Imagine your company is like a big house: 
+
+- **Identity Management** = The guest list. 
+  (Who is allowed to enter? Employees, contractors, partners.)
+
+- **Authentication** = The front door lock. 
+  (How do guests prove they belong? Keys, passwords, fingerprints.)
+
+- **Authorization** = The room permissions. 
+  (Once inside, which rooms can they enter? Kitchen for chefs, office for managers.)
+
+- **Access Policies** = The house rules. 
+  (Guests can only enter during certain hours, or only with supervision.)
+
+- **Auditing & Compliance** = The CCTV cameras and visitor logbook. 
+  (Tracking who entered, when, and what they did.)
+
+So IAM is not the *walls* or *fence* (that’s the firewall), 
+IAM is the *guest management system* that ensures the right people 
+get in and only go where they’re supposed to.

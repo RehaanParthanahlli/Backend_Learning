@@ -1,0 +1,7 @@
+EC2 is like renting apartments in a huge skyscraper:
+- Each apartment = an EC2 instance (virtual server).
+- You choose the size/layout = instance type (CPU, RAM, storage).
+- You furnish it = Amazon Machine Image (AMI, OS + software).
+- You pay rent only for the time you use it = on-demand pricing.
+- You can rent more apartments during peak season = scaling up.
+- You can vacate them when not needed = scaling down.
